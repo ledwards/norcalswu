@@ -8,7 +8,7 @@ export default function Home() {
       <section className="text-center py-8 flex flex-col items-center bg-white">
         <div className="w-full md:w-[50%] mb-6">
           <Image
-            src="/Flag_of_california.png"
+            src="/Flag_of_California.png"
             alt="California State Flag"
             width={600}
             height={338}
