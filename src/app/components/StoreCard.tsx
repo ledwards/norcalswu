@@ -21,7 +21,7 @@ interface StoreCardProps {
   };
   social: {
     facebook: string;
-    website: string;
+    website?: string;
     discord: string;
     store?: string;
     instagram?: string;
