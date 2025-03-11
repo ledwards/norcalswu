@@ -20,9 +20,9 @@ interface StoreCardProps {
     registrationUrl?: string;
   };
   social: {
-    facebook: string;
+    facebook?: string;
     website?: string;
-    discord: string;
+    discord?: string;
     store?: string;
     instagram?: string;
   };

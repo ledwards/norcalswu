@@ -78,6 +78,123 @@ const stores = {
       instagram: "https://www.instagram.com/gamesofbrentwood/",
     },
   },
+  gamesOfBerkeley: {
+    name: "Games of Berkeley",
+    address: {
+      street: "2510 Durant Ave",
+      city: "Berkeley",
+      state: "CA",
+      zip: "94704",
+      googleMapsUrl: "https://www.google.com/maps/place/Games+of+Berkeley/@37.8679439,-122.2577293,17z",
+    },
+    contact: {
+      phone: "(510) 540-7822",
+      email: "info@gamesofberkeley.com",
+    },
+    events: {
+      weeklyPlay: "Wednesdays 6:00pm",
+      showdown: "TBD",
+    },
+    social: {
+      facebook: "https://www.facebook.com/GamesOfBerkeley/",
+      website: "https://www.gamesofberkeley.com/",
+      instagram: "https://www.instagram.com/gamesofberkeley/",
+      store: "https://gamesofberkeley.com/products",
+    },
+  },
+  gamesOfFremont: {
+    name: "Games of Fremont",
+    address: {
+      street: "39483 Fremont Blvd",
+      city: "Fremont",
+      state: "CA",
+      zip: "94538",
+      googleMapsUrl: "https://www.google.com/maps/place/Games+of+Fremont/@37.5384,-121.9784,17z",
+    },
+    contact: {
+      phone: "(510) 505-0101",
+      email: "gamesoffremont@gmail.com",
+    },
+    events: {
+      weeklyPlay: "Thursdays 6:30pm",
+      showdown: "TBD",
+    },
+    social: {
+      facebook: "https://www.facebook.com/gamesoffremont/",
+      instagram: "https://www.instagram.com/gamesoffremont/",
+    },
+  },
+  gamesOfMartinez: {
+    name: "Games of Martinez",
+    address: {
+      street: "1035 Arnold Dr",
+      city: "Martinez",
+      state: "CA",
+      zip: "94553",
+      googleMapsUrl: "https://www.google.com/maps/place/Games+of+Martinez/@37.9989,-122.1235,17z",
+    },
+    contact: {
+      phone: "(925) 228-4477",
+      email: "gamesofmartinez@gmail.com",
+    },
+    events: {
+      weeklyPlay: "TBD",
+      showdown: "TBD",
+    },
+    social: {
+      website: "https://gamesofmartinez.crystalcommerce.com",
+      facebook: "https://www.facebook.com/gamesofmartinez/",
+      instagram: "https://www.instagram.com/gamesofmartinez/",
+      discord: "https://discord.com/invite/qXPRGMrsHx",
+    },
+  },
+  gamesOfPittsburg: {
+    name: "Games of Pittsburg",
+    address: {
+      street: "2155 Railroad Ave",
+      city: "Pittsburg",
+      state: "CA",
+      zip: "94565",
+      googleMapsUrl: "https://www.google.com/maps/place/Games+of+Pittsburg/@38.0175,-121.8863,17z",
+    },
+    contact: {
+      phone: "(925) 439-2446",
+      email: "TBD",
+    },
+    events: {
+      weeklyPlay: "Tuesdays and Thursdays 7:00pm",
+      showdown: "TBD",
+    },
+    social: {
+      website: "https://gamesofpittsburg.com",
+      instagram: "https://www.instagram.com/games_of_pittsburg",
+      discord: "https://discord.gg/5XhCXecc",
+    },
+  },
+  cardhouse88: {
+    name: "88 Cardhouse",
+    address: {
+      street: "5970 Mowry Ave Suite J",
+      city: "Newark",
+      state: "CA",
+      zip: "94560",
+      googleMapsUrl: "https://www.google.com/maps/place/88+Cardhouse/@37.5250721,-122.0064443,817m",
+    },
+    contact: {
+      phone: "(510) 999-6188",
+      email: "88cardhouse@gmail.com",
+    },
+    events: {
+      weeklyPlay: "Saturdays 5pm (Constructed), Saturdays 7pm (Draft)",
+      showdown: "TBD",
+      registrationUrl: "https://www.88cardhouse.com/collections/tournament-sign-up/products/star-wars-unlimited-weekly-play"
+    },
+    social: {
+      facebook: "https://www.facebook.com/88cardhouse/",
+      instagram: "https://www.instagram.com/88cardhouse/",
+      discord: "https://discord.gg/bEwP86uaUJ",
+    },
+  },
 };
 
 export default function Home() {
@@ -178,7 +295,12 @@ export default function Home() {
           <h3 className="text-xl font-bold mb-6 text-gray-900 border-b pb-2">East Bay</h3>
           <p className="text-gray-800 text-sm mb-2">Berkeley, Oakland, Alameda, Walnut Creek, Concord, Dublin, Pleasanton</p>
           <div className="grid md:grid-cols-2 gap-8 auto-cols-min">
+            <StoreCard {...stores.gamesOfBerkeley} />
             <StoreCard {...stores.gamesOfBrentwood} />
+            <StoreCard {...stores.gamesOfFremont} />
+            <StoreCard {...stores.gamesOfMartinez} />
+            <StoreCard {...stores.gamesOfPittsburg} />
+            <StoreCard {...stores.cardhouse88} />
           </div>
           <p className="text-gray-800 italic mt-8">More stores coming soon...</p>
         </div>
