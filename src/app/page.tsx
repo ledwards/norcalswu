@@ -138,7 +138,7 @@ const stores = {
       email: "gamesofmartinez@gmail.com",
     },
     events: {
-      weeklyPlay: "TBD",
+      weeklyPlay: "Saturdays 3:00pm",
       showdown: "TBD",
     },
     social: {
@@ -162,7 +162,7 @@ const stores = {
       email: "TBD",
     },
     events: {
-      weeklyPlay: "Tuesdays and Thursdays 7:00pm",
+      weeklyPlay: "Tuesdays 7:00pm, Thursdays 7:00pm",
       showdown: "TBD",
     },
     social: {
@@ -185,7 +185,7 @@ const stores = {
       email: "88cardhouse@gmail.com",
     },
     events: {
-      weeklyPlay: "Saturdays 5pm (Constructed), Saturdays 7pm (Draft)",
+      weeklyPlay: "Saturdays 5:00pm (Constructed), Saturdays 7:00pm (Draft)",
       showdown: "TBD",
       registrationUrl: "https://www.88cardhouse.com/collections/tournament-sign-up/products/star-wars-unlimited-weekly-play"
     },
@@ -193,6 +193,152 @@ const stores = {
       facebook: "https://www.facebook.com/88cardhouse/",
       instagram: "https://www.instagram.com/88cardhouse/",
       discord: "https://discord.gg/bEwP86uaUJ",
+    },
+  },
+  gameFortress: {
+    name: "The Game Fortress",
+    address: {
+      street: "1805 Novato Blvd",
+      city: "Novato",
+      state: "CA",
+      zip: "94947",
+      googleMapsUrl: "https://www.google.com/maps/place/Game+Fortress+Novato/@38.1079,-122.5786,17z",
+    },
+    contact: {
+      phone: "(415) 895-1784",
+      email: "info@gamefortressnovato.com",
+    },
+    events: {
+      weeklyPlay: "Saturdays 5:00pm",
+      showdown: "TBD",
+    },
+    social: {
+      facebook: "https://www.facebook.com/thegamefortressofficial",
+      website: "https://www.thegamefortress.store",
+      instagram: "https://www.instagram.com/thegamefortressofficial",
+      store: "https://www.thegamefortress.store/s/shop",
+      discord: "https://discord.gg/vaJDyMFAtW",
+    },
+  },
+  animeImports: {
+    name: "Anime Imports",
+    address: {
+      street: "116 Manor Dr",
+      city: "Pacifica",
+      state: "CA",
+      zip: "94044",
+      googleMapsUrl: "https://www.google.com/maps/place/Anime+Imports/@37.6384,-122.4921,17z",
+    },
+    contact: {
+      phone: "(650) 488-7900",
+      email: "questions@animeimports.net",
+    },
+    events: {
+      weeklyPlay: "Wednesdays 7:00pm",
+      showdown: "TBD",
+      registrationUrl: "https://animeimports.net/products/star-wars-unlimted-constructed-wednesdays-ticket-46?ticket=star-wars-unlimted-constructed-wednesdays-ticket-51",
+    },
+    social: {
+      facebook: "https://www.facebook.com/AnimeImports.net",
+      website: "https://www.animeimports.net/",
+      instagram: "https://www.instagram.com/animeimports/",
+    },
+  },
+  gameKastleFremont: {
+    name: "Game Kastle Fremont",
+    address: {
+      street: "3911 Washington Blvd",
+      city: "Fremont",
+      state: "CA",
+      zip: "94538",
+      googleMapsUrl: "https://www.google.com/maps/place/Game+Kastle+Fremont/@37.5336,-121.9755,17z",
+    },
+    contact: {
+      phone: "(510) 651-4263",
+      email: "fremont@gamekastle.com",
+    },
+    events: {
+      weeklyPlay: "Tuesdays 6:00pm (Open), Wednesdays 6:00pm (Constructed)",
+      showdown: "TBD",
+    },
+    social: {
+      facebook: "https://www.facebook.com/GameKastleFremont/",
+      website: "https://www.gamekastle.com/stores/fremont",
+      instagram: "https://www.instagram.com/gamekastlefremont/",
+    },
+  },
+  illusiveComics: {
+    name: "Illusive Comics & Games",
+    address: {
+      street: "1270 Franklin Mall",
+      city: "Santa Clara",
+      state: "CA",
+      zip: "95050",
+      googleMapsUrl: "https://www.google.com/maps/place/Illusive+Comics+%26+Games/@37.3537,-121.9427,17z",
+    },
+    contact: {
+      phone: "(408) 985-7481",
+      email: "contact@illusivecomics.com",
+    },
+    events: {
+      weeklyPlay: "Sundays 2:30pm",
+      showdown: "TBD",
+      registrationUrl: "https://shop.illusivecomics.com/events/",
+    },
+    social: {
+      facebook: "https://www.facebook.com/illusivecomics/",
+      website: "https://www.illusivecomics.com/",
+      instagram: "https://www.instagram.com/illusivecomics/",
+      discord: "https://discord.com/invite/n4V9z3G",
+      store: "https://shop.illusivecomics.com",
+    },
+  },
+  gameKastleRedwood: {
+    name: "Game Kastle Redwood City",
+    address: {
+      street: "1991 Broadway",
+      city: "Redwood City",
+      state: "CA",
+      zip: "94063",
+      googleMapsUrl: "https://www.google.com/maps/place/Game+Kastle+Redwood+City/@37.4853,-122.2316,17z",
+    },
+    contact: {
+      phone: "(650) 362-8743",
+      email: "redwoodcity.ca@gamekastle.com",
+    },
+    events: {
+      weeklyPlay: "Tuesdays 7:00pm (Draft on last Tuesday of each month, otherwise Constructed)",
+      showdown: "TBD",
+    },
+    social: {
+      facebook: "https://www.facebook.com/GameKastleRedwoodCity/",
+      website: "https://www.gamekastle.com/stores/redwoodcity",
+      instagram: "https://www.instagram.com/gamekastleredwoodcity/",
+      discord: "https://discord.gg/JuJP4JBSUa",
+    },
+  },
+  gamelandia: {
+    name: "Gamelandia",
+    address: {
+      street: "290 California Ave, Suite A",
+      city: "Palo Alto",
+      state: "CA",
+      zip: "94306",
+      googleMapsUrl: "https://www.google.com/maps/place/Gamelandia/@37.427731,-122.1467093,819m",
+    },
+    contact: {
+      phone: "(408) 290-9411",
+      email: "info@gamelandia.fun",
+    },
+    events: {
+      weeklyPlay: "Wednesdays 6:30pm",
+      showdown: "TBD",
+      registrationUrl: "https://gamelandia.fun/products/star-wars-unlimited-draft",
+    },
+    social: {
+      facebook: "https://www.facebook.com/gamelandia.fun",
+      website: "https://www.gamelandia.fun/",
+      instagram: "https://www.instagram.com/gamelandia.fun/",
     },
   },
 };
@@ -238,7 +384,7 @@ export default function Home() {
         <h2 className="text-2xl font-bold mb-6 text-gray-900">Upcoming Events</h2>
         <div className="aspect-[3/2] w-full mb-4">
           <iframe
-            src="https://calendar.google.com/calendar/embed?src=047048eefea36248a07bfb5565ea9a9d6741d8a8ca0cf11f49a7e90dedd88a8e%40group.calendar.google.com"
+            src="https://calendar.google.com/calendar/embed?src=047048eefea36248a07bfb5565ea9a9d6741d8a8ca0cf11f49a7e90dedd88a8e%40group.calendar.google.com&mode=AGENDA"
             style={{ border: 0 }}
             width="100%"
             height="100%"
@@ -301,36 +447,43 @@ export default function Home() {
             <StoreCard {...stores.gamesOfMartinez} />
             <StoreCard {...stores.gamesOfPittsburg} />
             <StoreCard {...stores.cardhouse88} />
+            <StoreCard {...stores.gameKastleFremont} />
           </div>
-          <p className="text-gray-800 italic mt-8">More stores coming soon...</p>
         </div>
 
         {/* Peninsula */}
         <div className="mb-12">
           <h3 className="text-xl font-bold mb-6 text-gray-900 border-b pb-2">Peninsula</h3>
           <p className="text-gray-800 text-sm mb-2">San Mateo, Redwood City, Burlingame, San Carlos</p>
-          <p className="text-gray-800 italic">Stores coming soon...</p>
+          <div className="grid md:grid-cols-2 gap-8 auto-cols-min">
+            <StoreCard {...stores.animeImports} />
+            <StoreCard {...stores.gameKastleRedwood} />
+          </div>
         </div>
 
         {/* South Bay */}
         <div className="mb-12">
           <h3 className="text-xl font-bold mb-6 text-gray-900 border-b pb-2">South Bay</h3>
           <p className="text-gray-800 text-sm mb-2">San Jose, Santa Clara, Mountain View, Sunnyvale, Cupertino</p>
-          <p className="text-gray-800 italic">Stores coming soon...</p>
+          <div className="grid md:grid-cols-2 gap-8 auto-cols-min">
+            <StoreCard {...stores.illusiveComics} />
+            <StoreCard {...stores.gamelandia} />
+          </div>
         </div>
 
         {/* North Bay */}
         <div className="mb-12">
           <h3 className="text-xl font-bold mb-6 text-gray-900 border-b pb-2">North Bay</h3>
           <p className="text-gray-800 text-sm mb-2">San Rafael, Novato, Santa Rosa, Petaluma</p>
-          <p className="text-gray-800 italic">Stores coming soon...</p>
+          <div className="grid md:grid-cols-2 gap-8 auto-cols-min">
+            <StoreCard {...stores.gameFortress} />
+          </div>
         </div>
 
         {/* Sacramento */}
         <div className="mb-12">
           <h3 className="text-xl font-bold mb-6 text-gray-900 border-b pb-2">Sacramento</h3>
           <p className="text-gray-800 text-sm mb-2">Sacramento, Davis, Folsom, Roseville</p>
-          <p className="text-gray-800 italic">Stores coming soon...</p>
         </div>
 
         {/* Contact Info */}
