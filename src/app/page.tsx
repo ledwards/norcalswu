@@ -17,14 +17,16 @@ const stores = {
       email: "info@gamescapesf.com",
     },
     events: {
-      weeklyPlay: "Weekly Play: Tuesdays 7:00pm",
-      showdown: "Store Showdown: TBD",
-      registrationUrl: "https://www.gamescapesf.com/events",
+      weeklyPlay: "Tuesday 7:00pm",
+      showdown: "TBD",
+      registrationUrl: "https://www.gamescapesf.store/events",
     },
     social: {
       facebook: "https://www.facebook.com/GamescapeSF/",
       website: "https://www.gamescapesf.com/",
-      discord: "https://discord.gg/RkbeFyrb",
+      discord: "https://discord.com/invite/YBVRpvtDqM",
+      store: "https://www.gamescapesf.store/",
+      instagram: "https://www.instagram.com/gamescapesf/",
     },
   },
   gameParlour: {
@@ -38,17 +40,19 @@ const stores = {
     },
     contact: {
       phone: "(415) 566-0170",
-      email: "info@gameparlour.com",
+      email: "hello@thegameparlour.com",
     },
     events: {
-      weeklyPlay: "Weekly Play: Fridays 6:30pm",
-      showdown: "Store Showdown: TBD",
-      registrationUrl: "https://www.gameparlour.com/events",
+      weeklyPlay: "Friday 6:30pm",
+      showdown: "TBD",
+      registrationUrl: "https://thegameparloursf.square.site/shop/23",
     },
     social: {
-      facebook: "https://www.facebook.com/GameParlour/",
-      website: "https://www.gameparlour.com/",
-      discord: "https://discord.gg/RkbeFyrb",
+      facebook: "https://www.facebook.com/thegameparloursf/",
+      website: "https://www.thegameparlour.com/",
+      discord: "https://discord.gg/5QvSX7sm",
+      store: "https://order.toasttab.com/online/the-game-parlour-1342-irving-street",
+      instagram: "https://www.instagram.com/thegameparloursf/",
     },
   },
 };
@@ -89,7 +93,7 @@ export default function Home() {
       {/* Calendar Section */}
       <section className="bg-white rounded-lg shadow-lg p-6">
         <h2 className="text-2xl font-bold mb-6 text-gray-900">Upcoming Events</h2>
-        <div className="aspect-[3/2] w-full">
+        <div className="aspect-[3/2] w-full mb-4">
           <iframe
             src="https://calendar.google.com/calendar/embed?src=047048eefea36248a07bfb5565ea9a9d6741d8a8ca0cf11f49a7e90dedd88a8e%40group.calendar.google.com"
             style={{ border: 0 }}
@@ -99,6 +103,9 @@ export default function Home() {
             scrolling="no"
           ></iframe>
         </div>
+        <p className="text-sm text-gray-600 italic text-center">
+          Interested in being an admin for this calendar? Contact @terronk on the NorCal SWU Discord
+        </p>
       </section>
 
       {/* Community Section */}
@@ -174,6 +181,11 @@ export default function Home() {
           <p className="text-gray-800 text-sm mb-2">Sacramento, Davis, Folsom, Roseville</p>
           <p className="text-gray-800 italic">Stores coming soon...</p>
         </div>
+
+        {/* Contact Info */}
+        <p className="text-sm text-gray-600 italic text-center">
+          Missing or incorrect information? Contact @terronk on the NorCal SWU Discord
+        </p>
       </section>
     </div>
   );
