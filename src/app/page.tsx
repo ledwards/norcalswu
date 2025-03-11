@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { FaFacebook, FaGlobe, FaDiscord, FaPhone, FaEnvelope } from "react-icons/fa";
 
 export default function Home() {
   return (
@@ -72,6 +73,220 @@ export default function Home() {
           >
             Join the Community →
           </Link>
+        </div>
+      </section>
+
+      {/* Game Stores Section */}
+      <section className="bg-white rounded-lg shadow-lg p-6">
+        <h2 className="text-2xl font-bold mb-8 text-gray-900">Local Game Stores</h2>
+        
+        {/* San Francisco */}
+        <div className="mb-12">
+          <h3 className="text-xl font-bold mb-6 text-gray-900 border-b pb-2">San Francisco</h3>
+          <div className="grid md:grid-cols-2 gap-8">
+            {/* Gamescape */}
+            <div className="bg-white rounded-lg shadow p-6">
+              <h3 className="text-xl font-bold mb-4 text-gray-900">Gamescape</h3>
+              <div className="aspect-video mb-4 relative overflow-hidden rounded-lg">
+                <iframe
+                  src="https://www.google.com/maps?q=Gamescape+333+Divisadero+St+San+Francisco+CA+94117&output=embed"
+                  width="100%"
+                  height="100%"
+                ></iframe>
+              </div>
+              <div className="space-y-2 mb-4">
+                <p className="font-semibold text-gray-900">Address:</p>
+                <Link
+                  href="https://www.google.com/maps/place/Gamescape/@37.7729231,-122.4391581,17z"
+                  className="text-gray-900 hover:text-blue-600 flex items-center gap-2"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  333 Divisadero St, San Francisco, CA 94117
+                </Link>
+                <p className="font-semibold mt-4 text-gray-900">Contact:</p>
+                <p className="flex items-center gap-2">
+                  <FaPhone className="text-lg text-green-600" />
+                  <Link
+                    href="tel:4156214263"
+                    className="text-gray-900 hover:text-blue-600"
+                  >
+                    (415) 621-4263
+                  </Link>
+                </p>
+                <p className="flex items-center gap-2">
+                  <FaEnvelope className="text-lg text-gray-900" />
+                  <Link
+                    href="mailto:info@gamescapesf.com"
+                    className="text-blue-600 hover:text-gray-900"
+                  >
+                    info@gamescapesf.com
+                  </Link>
+                </p>
+                <p className="font-semibold mt-4 text-gray-900">Events:</p>
+                <div className="space-y-2">
+                  <p className="text-gray-800">Weekly Play: Tuesdays 7:00pm</p>
+                  <p className="text-gray-800">Store Showdown: TBD</p>
+                  <Link
+                    href="https://www.gamescapesf.com/events"
+                    className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Registration →
+                  </Link>
+                </div>
+                <div className="flex gap-4 mt-6">
+                  <Link
+                    href="https://www.facebook.com/GamescapeSF/"
+                    className="text-blue-600 hover:text-blue-800 text-2xl"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    title="Facebook"
+                  >
+                    <FaFacebook />
+                  </Link>
+                  <Link
+                    href="https://www.gamescapesf.com/"
+                    className="text-cyan-600 hover:text-cyan-800 text-2xl"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    title="Website"
+                  >
+                    <FaGlobe />
+                  </Link>
+                  <Link
+                    href="https://discord.gg/RkbeFyrb"
+                    className="text-[#5865F2] hover:text-[#4752C4] text-2xl"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    title="Discord"
+                  >
+                    <FaDiscord />
+                  </Link>
+                </div>
+              </div>
+            </div>
+
+            {/* Game Parlour */}
+            <div className="bg-white rounded-lg shadow p-6">
+              <h3 className="text-xl font-bold mb-4 text-gray-900">The Game Parlour</h3>
+              <div className="aspect-video mb-4 relative overflow-hidden rounded-lg">
+                <iframe
+                  src="https://www.google.com/maps?q=The+Game+Parlour+1342+Irving+St+San+Francisco+CA+94122&output=embed"
+                  width="100%"
+                  height="100%"
+                ></iframe>
+              </div>
+              <div className="space-y-2 mb-4">
+                <p className="font-semibold text-gray-900">Address:</p>
+                <Link
+                  href="https://www.google.com/maps/place/The+Game+Parlour/@37.7930731,-122.4725231,17z"
+                  className="text-gray-900 hover:text-blue-600 flex items-center gap-2"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  1342 Irving St, San Francisco, CA 94122
+                </Link>
+                <p className="font-semibold mt-4 text-gray-900">Contact:</p>
+                <p className="flex items-center gap-2">
+                  <FaPhone className="text-lg text-green-600" />
+                  <Link
+                    href="tel:4155660170"
+                    className="text-gray-900 hover:text-blue-600"
+                  >
+                    (415) 566-0170
+                  </Link>
+                </p>
+                <p className="flex items-center gap-2">
+                  <FaEnvelope className="text-lg text-gray-900" />
+                  <Link
+                    href="mailto:info@gameparlour.com"
+                    className="text-blue-600 hover:text-gray-900"
+                  >
+                    info@gameparlour.com
+                  </Link>
+                </p>
+                <p className="font-semibold mt-4 text-gray-900">Events:</p>
+                <div className="space-y-2">
+                  <p className="text-gray-800">Weekly Play: Fridays 6:30pm</p>
+                  <p className="text-gray-800">Store Showdown: TBD</p>
+                  <Link
+                    href="https://www.gameparlour.com/events"
+                    className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Registration →
+                  </Link>
+                </div>
+                <div className="flex gap-4 mt-6">
+                  <Link
+                    href="https://www.facebook.com/GameParlour/"
+                    className="text-blue-600 hover:text-blue-800 text-2xl"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    title="Facebook"
+                  >
+                    <FaFacebook />
+                  </Link>
+                  <Link
+                    href="https://www.gameparlour.com/"
+                    className="text-cyan-600 hover:text-cyan-800 text-2xl"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    title="Website"
+                  >
+                    <FaGlobe />
+                  </Link>
+                  <Link
+                    href="https://discord.gg/RkbeFyrb"
+                    className="text-[#5865F2] hover:text-[#4752C4] text-2xl"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    title="Discord"
+                  >
+                    <FaDiscord />
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* East Bay */}
+        <div className="mb-12">
+          <h3 className="text-xl font-bold mb-6 text-gray-900 border-b pb-2">East Bay</h3>
+          <p className="text-gray-800 text-sm mb-2">Berkeley, Oakland, Alameda, Walnut Creek, Concord, Dublin, Pleasanton</p>
+          <p className="text-gray-800 italic">Stores coming soon...</p>
+        </div>
+
+        {/* Peninsula */}
+        <div className="mb-12">
+          <h3 className="text-xl font-bold mb-6 text-gray-900 border-b pb-2">Peninsula</h3>
+          <p className="text-gray-800 text-sm mb-2">San Mateo, Redwood City, Burlingame, San Carlos</p>
+          <p className="text-gray-800 italic">Stores coming soon...</p>
+        </div>
+
+        {/* South Bay */}
+        <div className="mb-12">
+          <h3 className="text-xl font-bold mb-6 text-gray-900 border-b pb-2">South Bay</h3>
+          <p className="text-gray-800 text-sm mb-2">San Jose, Santa Clara, Mountain View, Sunnyvale, Cupertino</p>
+          <p className="text-gray-800 italic">Stores coming soon...</p>
+        </div>
+
+        {/* North Bay */}
+        <div className="mb-12">
+          <h3 className="text-xl font-bold mb-6 text-gray-900 border-b pb-2">North Bay</h3>
+          <p className="text-gray-800 text-sm mb-2">San Rafael, Novato, Santa Rosa, Petaluma</p>
+          <p className="text-gray-800 italic">Stores coming soon...</p>
+        </div>
+
+        {/* Sacramento */}
+        <div className="mb-12">
+          <h3 className="text-xl font-bold mb-6 text-gray-900 border-b pb-2">Sacramento</h3>
+          <p className="text-gray-800 text-sm mb-2">Sacramento, Davis, Folsom, Roseville</p>
+          <p className="text-gray-800 italic">Stores coming soon...</p>
         </div>
       </section>
     </div>
