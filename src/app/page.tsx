@@ -4,7 +4,7 @@ import StoreCard from "./components/StoreCard";
 
 const stores = {
   gamescape: {
-    name: "Gamescape",
+    name: "Gamescape SF",
     address: {
       street: "333 Divisadero St",
       city: "San Francisco",
@@ -17,7 +17,7 @@ const stores = {
       email: "info@gamescapesf.com",
     },
     events: {
-      weeklyPlay: "Tuesday 7:00pm",
+      weeklyPlay: "Tuesdays 7:00pm",
       showdown: "TBD",
       registrationUrl: "https://www.gamescapesf.store/events",
     },
@@ -43,7 +43,7 @@ const stores = {
       email: "hello@thegameparlour.com",
     },
     events: {
-      weeklyPlay: "Friday 6:30pm",
+      weeklyPlay: "Fridays 6:30pm",
       showdown: "TBD",
       registrationUrl: "https://thegameparloursf.square.site/shop/23",
     },
@@ -53,6 +53,29 @@ const stores = {
       discord: "https://discord.gg/5QvSX7sm",
       store: "https://order.toasttab.com/online/the-game-parlour-1342-irving-street",
       instagram: "https://www.instagram.com/thegameparloursf/",
+    },
+  },
+  gamesOfBrentwood: {
+    name: "Games of Brentwood",
+    address: {
+      street: "2430 Sand Creek Rd Suite D-3",
+      city: "Brentwood",
+      state: "CA",
+      zip: "94513",
+      googleMapsUrl: "https://www.google.com/maps/place/Games+of+Brentwood/@37.9417108,-121.7392959,813m",
+    },
+    contact: {
+      phone: "(925) 679-4053",
+      email: "gamesofbrentwoodinc2023@gmail.com"
+    },
+    events: {
+      weeklyPlay: "Sundays 2:00pm",
+      showdown: "TBD",
+    },
+    social: {
+      facebook: "https://www.facebook.com/GamesOfBrentwood/",
+      discord: "https://discord.com/invite/hghP5yp3Ks",
+      instagram: "https://www.instagram.com/gamesofbrentwood/",
     },
   },
 };
@@ -76,9 +99,12 @@ export default function Home() {
           NorCal Star Wars: Unlimited
         </h1>
         <p className="text-xl text-gray-900 mb-6 max-w-lg mx-auto leading-relaxed">
-          Join our growing community of<br className="hidden md:block" />
-          Star Wars: Unlimited players<br className="hidden md:block" />
-          in Northern California
+          <span className="md:hidden">Join our growing community of Star Wars: Unlimited players in Northern California</span>
+          <span className="hidden md:inline">
+            Join our growing community of<br />
+            Star Wars: Unlimited players<br />
+            in Northern California
+          </span>
         </p>
         <Link
           href="https://discord.gg/RkbeFyrb"
@@ -141,7 +167,7 @@ export default function Home() {
         {/* San Francisco */}
         <div className="mb-12">
           <h3 className="text-xl font-bold mb-6 text-gray-900 border-b pb-2">San Francisco</h3>
-          <div className="grid md:grid-cols-2 gap-8">
+          <div className="grid md:grid-cols-2 gap-8 auto-cols-min">
             <StoreCard {...stores.gamescape} />
             <StoreCard {...stores.gameParlour} />
           </div>
@@ -151,7 +177,10 @@ export default function Home() {
         <div className="mb-12">
           <h3 className="text-xl font-bold mb-6 text-gray-900 border-b pb-2">East Bay</h3>
           <p className="text-gray-800 text-sm mb-2">Berkeley, Oakland, Alameda, Walnut Creek, Concord, Dublin, Pleasanton</p>
-          <p className="text-gray-800 italic">Stores coming soon...</p>
+          <div className="grid md:grid-cols-2 gap-8 auto-cols-min">
+            <StoreCard {...stores.gamesOfBrentwood} />
+          </div>
+          <p className="text-gray-800 italic mt-8">More stores coming soon...</p>
         </div>
 
         {/* Peninsula */}
