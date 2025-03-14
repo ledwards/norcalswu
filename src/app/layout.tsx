@@ -64,6 +64,22 @@ export const metadata: Metadata = {
     description: "Join the NorCal Star Wars: Unlimited community! Find local events, connect with players, and learn about the game.",
     type: "website",
     locale: "en_US",
+    images: [{
+      url: "/NorCalSWU.png",
+      width: 600,
+      height: 338,
+      alt: "NorCal Star Wars: Unlimited Logo"
+    }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "NorCal Star Wars: Unlimited",
+    description: "Join the NorCal Star Wars: Unlimited community! Find local events, connect with players, and learn about the game.",
+    images: ["/NorCalSWU.png"],
+  },
+  icons: {
+    icon: "/NorCalSWU.png",
+    apple: "/NorCalSWU.png",
   },
 };
 

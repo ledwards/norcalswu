@@ -263,8 +263,9 @@ const stores = {
     },
     social: {
       facebook: "https://www.facebook.com/GameKastleFremont/",
-      website: "https://www.gamekastle.com/stores/fremont",
+      website: "https://gamekastle.com/stores/fremont",
       instagram: "https://www.instagram.com/gamekastlefremont/",
+      discord: "https://discord.gg/gamekastle",
     },
   },
   illusiveComics: {
@@ -312,7 +313,7 @@ const stores = {
     },
     social: {
       facebook: "https://www.facebook.com/GameKastleRedwoodCity/",
-      website: "https://www.gamekastle.com/stores/redwoodcity",
+      website: "https://gamekastle.com/stores/redwoodcity",
       instagram: "https://www.instagram.com/gamekastleredwoodcity/",
       discord: "https://discord.gg/JuJP4JBSUa",
     },
@@ -341,6 +342,97 @@ const stores = {
       instagram: "https://www.instagram.com/gamelandia.fun/",
     },
   },
+  fireAndIce: {
+    name: "Fire & Ice Games",
+    address: {
+      street: "6660 Lonetree Blvd",
+      city: "Rocklin",
+      state: "CA",
+      zip: "95765",
+      googleMapsUrl: "https://www.google.com/maps/place/Fire+%26+Ice+Games/@38.7975,-121.2859,17z",
+    },
+    contact: {
+      phone: "(916) 771-2161",
+    },
+    events: {
+      weeklyPlay: "Fridays 6:30pm",
+      showdown: "TBD",
+    },
+    social: {
+      instagram: "https://www.instagram.com/fire.and.ice.games",
+      facebook: "https://www.facebook.com/p/Fire-Ice-Games-LLC-100071624994565/",
+    },
+  },
+  cardShopSac: {
+    name: "Card Shop Sacramento X Gold Star Collectibles",
+    address: {
+      street: "2440 Fulton Ave Suite 9",
+      city: "Sacramento",
+      state: "CA",
+      zip: "95825",
+      googleMapsUrl: "https://www.google.com/maps/place/Card+Shop+Sacramento+X+Gold+Star+Collectibles/@38.5974,-121.4778,17z",
+    },
+    contact: {
+      phone: "(916) 360-2394",
+      email: "sales@goldstarcollectibles.com",
+    },
+    events: {
+      weeklyPlay: "Thursdays 6:00pm",
+      showdown: "TBD",
+    },
+    social: {
+    website: "https://www.goldstarcollectibles.com",
+
+    },
+  },
+  hammerhead: {
+    name: "Hammerhead Games",
+    address: {
+      street: "5800 Madison Ave Suite V & W",
+      city: "Sacramento",
+      state: "CA",
+      zip: "95841",
+      googleMapsUrl: "https://www.google.com/maps/place/Hammerhead+Games/@38.6619,-121.3766,17z",
+    },
+    contact: {
+      phone: "(916) 279-4994",
+      email: "HammerheadGames@Outlook.com",
+    },
+    events: {
+      weeklyPlay: "Mondays 6:30pm",
+      showdown: "TBD",
+    },
+    social: {
+    facebook: "https://www.facebook.com/HHGSAC",
+      website: "https://www.hammerheadgames.net/",
+      discord: "https://discord.com/invite/Y9qecUgkdF",
+      instagram: "https://www.instagram.com/hammerhead_games/",
+    },
+  },
+  gameKastleSac: {
+    name: "Game Kastle Sacramento",
+    address: {
+      street: "5522 Garfield Ave",
+      city: "Sacramento",
+      state: "CA",
+      zip: "95841",
+      googleMapsUrl: "https://www.google.com/maps/place/Game+Kastle+Sacramento/@38.6486,-121.3464,17z",
+    },
+    contact: {
+      phone: "(916) 331-8707",
+      email: "sacramento@gamekastle.com",
+    },
+    events: {
+      weeklyPlay: "Thursdays 6:30pm",
+      showdown: "TBD",
+      registrationUrl: "https://gamekastle.com/stores/sacramento",
+    },
+    social: {
+      facebook: "https://www.facebook.com/GameKastleSacramento/",
+      website: "https://gamekastle.com/stores/sacramento",
+      discord: "https://discord.gg/gamekastle",
+    },
+  },
 };
 
 export default function Home() {
@@ -350,8 +442,8 @@ export default function Home() {
       <section className="text-center py-8 flex flex-col items-center bg-white">
         <div className="w-full md:w-[50%] mb-6">
           <Image
-            src="/Flag_of_California.png"
-            alt="California State Flag"
+            src="/NorCalSWU.png"
+            alt="NorCal Star Wars: Unlimited Logo"
             width={600}
             height={338}
             className="w-full h-auto"
@@ -483,7 +575,13 @@ export default function Home() {
         {/* Sacramento */}
         <div className="mb-12">
           <h3 className="text-xl font-bold mb-6 text-gray-900 border-b pb-2">Sacramento</h3>
-          <p className="text-gray-800 text-sm mb-2">Sacramento, Davis, Folsom, Roseville</p>
+          <p className="text-gray-800 text-sm mb-2">Sacramento, Davis, Folsom, Roseville, Rocklin</p>
+          <div className="grid md:grid-cols-2 gap-8 auto-cols-min">
+            <StoreCard {...stores.fireAndIce} />
+            <StoreCard {...stores.cardShopSac} />
+            <StoreCard {...stores.hammerhead} />
+            <StoreCard {...stores.gameKastleSac} />
+          </div>
         </div>
 
         {/* Contact Info */}

@@ -12,7 +12,7 @@ interface StoreCardProps {
   };
   contact: {
     phone: string;
-    email: string;
+    email?: string;
   };
   events: {
     weeklyPlay?: string;
