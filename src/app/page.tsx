@@ -343,7 +343,7 @@ const stores = {
     },
   },
   fireAndIce: {
-    name: "Fire & Ice Games",
+    name: "Fire & Ice Games (Rocklin)",
     address: {
       street: "6660 Lonetree Blvd",
       city: "Rocklin",
@@ -352,10 +352,31 @@ const stores = {
       googleMapsUrl: "https://www.google.com/maps/place/Fire+%26+Ice+Games/@38.7975,-121.2859,17z",
     },
     contact: {
-      phone: "(916) 771-2161",
+      phone: "(916) 771-2161"
     },
     events: {
       weeklyPlay: "Fridays 6:30pm",
+      showdown: "TBD",
+    },
+    social: {
+      instagram: "https://www.instagram.com/fire.and.ice.games",
+      facebook: "https://www.facebook.com/p/Fire-Ice-Games-LLC-100071624994565/",
+    },
+  },
+  fireAndIceCitrusHeights: {
+    name: "Fire & Ice Games (Citrus Heights)",
+    address: {
+      street: "6245 Sunrise Blvd A",
+      city: "Citrus Heights",
+      state: "CA",
+      zip: "95610",
+      googleMapsUrl: "https://www.google.com/maps/place/Fire+%26+Ice+Games/@38.6784,-121.2728,17z",
+    },
+    contact: {
+      phone: "(916) 910-9417"
+    },
+    events: {
+      weeklyPlay: "Tuesdays 6:30pm",
       showdown: "TBD",
     },
     social: {
@@ -575,9 +596,10 @@ export default function Home() {
         {/* Sacramento */}
         <div className="mb-12">
           <h3 className="text-xl font-bold mb-6 text-gray-900 border-b pb-2">Sacramento</h3>
-          <p className="text-gray-800 text-sm mb-2">Sacramento, Davis, Folsom, Roseville, Rocklin</p>
+          <p className="text-gray-800 text-sm mb-2">Sacramento, Davis, Folsom, Roseville, Rocklin, Citrus Heights</p>
           <div className="grid md:grid-cols-2 gap-8 auto-cols-min">
             <StoreCard {...stores.fireAndIce} />
+            <StoreCard {...stores.fireAndIceCitrusHeights} />
             <StoreCard {...stores.cardShopSac} />
             <StoreCard {...stores.hammerhead} />
             <StoreCard {...stores.gameKastleSac} />
