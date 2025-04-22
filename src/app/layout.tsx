@@ -22,6 +22,7 @@ export const metadata: Metadata = {
     "Silicon Valley",
     "Northern California",
     "NorCal",
+    "Central Coast",
     // Major cities
     "San Francisco",
     "San Jose",
@@ -42,6 +43,9 @@ export const metadata: Metadata = {
     "South San Francisco",
     "San Rafael",
     "Santa Rosa",
+    "Salinas",
+    "Monterey",
+    "Santa Cruz",
     // Counties
     "San Francisco County",
     "Santa Clara County",
@@ -52,11 +56,14 @@ export const metadata: Metadata = {
     "Sonoma County",
     "Napa County",
     "Solano County",
+    "Monterey County",
+    "Santa Cruz County",
     // Regions
     "Peninsula",
     "South Bay",
     "East Bay",
     "North Bay",
+    "Central Coast",
     "Community"
   ],
   openGraph: {

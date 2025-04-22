@@ -454,6 +454,29 @@ const stores = {
       discord: "https://discord.gg/gamekastle",
     },
   },
+  greenPotion: {
+    name: "Green Potion Games",
+    address: {
+      street: "1271 N Davis Rd",
+      city: "Salinas",
+      state: "CA",
+      zip: "93907",
+      googleMapsUrl: "https://www.google.com/maps/place/Green+Potion+Games/@36.7027,-121.6584,17z",
+    },
+    contact: {
+      phone: "(831) 208-6809"
+    },
+    events: {
+      weeklyPlay: "Thursdays 6:00pm",
+      showdown: "May 4 (Time TBD)",
+    },
+    social: {
+      website: "https://linktr.ee/GreenPotionGames",
+      discord: "https://discord.gg/greenpotion",
+      facebook: "https://www.facebook.com/GreenPotionGames",
+      instagram: "https://www.instagram.com/greenpotiongames",
+    },
+  },
 };
 
 export default function Home() {
@@ -552,7 +575,7 @@ export default function Home() {
         {/* East Bay */}
         <div className="mb-12">
           <h3 className="text-xl font-bold mb-6 text-gray-900 border-b pb-2">East Bay</h3>
-          <p className="text-gray-800 text-sm mb-2">Berkeley, Oakland, Alameda, Walnut Creek, Concord, Dublin, Pleasanton</p>
+          <p className="text-gray-800 text-sm mb-2">Your friendly local gaming stores supporting Star Wars: Unlimited in Berkeley, Oakland, Alameda, Walnut Creek, Concord, Dublin, and Pleasanton.</p>
           <div className="grid md:grid-cols-2 gap-8 auto-cols-min">
             <StoreCard {...stores.gamesOfBerkeley} />
             <StoreCard {...stores.gamesOfBrentwood} />
@@ -567,7 +590,7 @@ export default function Home() {
         {/* Peninsula */}
         <div className="mb-12">
           <h3 className="text-xl font-bold mb-6 text-gray-900 border-b pb-2">Peninsula</h3>
-          <p className="text-gray-800 text-sm mb-2">San Mateo, Redwood City, Burlingame, San Carlos</p>
+          <p className="text-gray-800 text-sm mb-2">Your friendly local gaming stores supporting Star Wars: Unlimited in San Mateo, Redwood City, Burlingame, and San Carlos.</p>
           <div className="grid md:grid-cols-2 gap-8 auto-cols-min">
             <StoreCard {...stores.animeImports} />
             <StoreCard {...stores.gameKastleRedwood} />
@@ -577,7 +600,7 @@ export default function Home() {
         {/* South Bay */}
         <div className="mb-12">
           <h3 className="text-xl font-bold mb-6 text-gray-900 border-b pb-2">South Bay</h3>
-          <p className="text-gray-800 text-sm mb-2">San Jose, Santa Clara, Mountain View, Sunnyvale, Cupertino</p>
+          <p className="text-gray-800 text-sm mb-2">Your friendly local gaming stores supporting Star Wars: Unlimited in San Jose, Santa Clara, Mountain View, Sunnyvale, and Cupertino.</p>
           <div className="grid md:grid-cols-2 gap-8 auto-cols-min">
             <StoreCard {...stores.illusiveComics} />
             <StoreCard {...stores.gamelandia} />
@@ -587,7 +610,7 @@ export default function Home() {
         {/* North Bay */}
         <div className="mb-12">
           <h3 className="text-xl font-bold mb-6 text-gray-900 border-b pb-2">North Bay</h3>
-          <p className="text-gray-800 text-sm mb-2">San Rafael, Novato, Santa Rosa, Petaluma</p>
+          <p className="text-gray-800 text-sm mb-2">Your friendly local gaming stores supporting Star Wars: Unlimited in San Rafael, Novato, Santa Rosa, and Petaluma.</p>
           <div className="grid md:grid-cols-2 gap-8 auto-cols-min">
             <StoreCard {...stores.gameFortress} />
           </div>
@@ -596,13 +619,22 @@ export default function Home() {
         {/* Sacramento */}
         <div className="mb-12">
           <h3 className="text-xl font-bold mb-6 text-gray-900 border-b pb-2">Sacramento</h3>
-          <p className="text-gray-800 text-sm mb-2">Sacramento, Davis, Folsom, Roseville, Rocklin, Citrus Heights</p>
+          <p className="text-gray-800 text-sm mb-2">Your friendly local gaming stores supporting Star Wars: Unlimited in Sacramento, Davis, Folsom, Roseville, Rocklin, and Citrus Heights.</p>
           <div className="grid md:grid-cols-2 gap-8 auto-cols-min">
             <StoreCard {...stores.fireAndIce} />
             <StoreCard {...stores.fireAndIceCitrusHeights} />
             <StoreCard {...stores.cardShopSac} />
             <StoreCard {...stores.hammerhead} />
             <StoreCard {...stores.gameKastleSac} />
+          </div>
+        </div>
+
+        {/* Central Coast */}
+        <div className="mb-12">
+          <h3 className="text-xl font-bold mb-6 text-gray-900 border-b pb-2">Central Coast</h3>
+          <p className="text-gray-800 text-sm mb-2">Your friendly local gaming stores supporting Star Wars: Unlimited in Monterey, Santa Cruz, and Salinas.</p>
+          <div className="grid md:grid-cols-2 gap-8 auto-cols-min">
+            <StoreCard {...stores.greenPotion} />
           </div>
         </div>
 
