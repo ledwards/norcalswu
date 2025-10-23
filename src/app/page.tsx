@@ -18,7 +18,6 @@ const stores = {
     },
     events: {
       weeklyPlay: "Tuesdays 7:00pm",
-      showdown: "TBD",
       registrationUrl: "https://www.gamescapesf.store/events",
     },
     social: {
@@ -44,7 +43,6 @@ const stores = {
     },
     events: {
       weeklyPlay: "Fridays 6:30pm",
-      showdown: "TBD",
       registrationUrl: "https://thegameparloursf.square.site/shop/23",
     },
     social: {
@@ -70,7 +68,6 @@ const stores = {
     },
     events: {
       weeklyPlay: "Sundays 2:00pm",
-      showdown: "TBD",
     },
     social: {
       facebook: "https://www.facebook.com/GamesOfBrentwood/",
@@ -93,7 +90,6 @@ const stores = {
     },
     events: {
       weeklyPlay: "Wednesdays 6:00pm",
-      showdown: "TBD",
     },
     social: {
       facebook: "https://www.facebook.com/GamesOfBerkeley/",
@@ -117,7 +113,6 @@ const stores = {
     },
     events: {
       weeklyPlay: "Thursdays 6:30pm",
-      showdown: "TBD",
     },
     social: {
       facebook: "https://www.facebook.com/gamesoffremont/",
@@ -139,7 +134,6 @@ const stores = {
     },
     events: {
       weeklyPlay: "Saturdays 3:00pm",
-      showdown: "TBD",
     },
     social: {
       website: "https://gamesofmartinez.crystalcommerce.com",
@@ -163,7 +157,6 @@ const stores = {
     },
     events: {
       weeklyPlay: "Tuesdays 7:00pm, Thursdays 7:00pm",
-      showdown: "TBD",
     },
     social: {
       website: "https://gamesofpittsburg.com",
@@ -186,7 +179,6 @@ const stores = {
     },
     events: {
       weeklyPlay: "Saturdays 5:00pm (Constructed), Saturdays 7:00pm (Draft)",
-      showdown: "TBD",
       registrationUrl: "https://www.88cardhouse.com/collections/tournament-sign-up/products/star-wars-unlimited-weekly-play"
     },
     social: {
@@ -210,7 +202,6 @@ const stores = {
     },
     events: {
       weeklyPlay: "Saturdays 5:00pm",
-      showdown: "TBD",
     },
     social: {
       facebook: "https://www.facebook.com/thegamefortressofficial",
@@ -235,7 +226,6 @@ const stores = {
     },
     events: {
       weeklyPlay: "Wednesdays 7:00pm",
-      showdown: "TBD",
       registrationUrl: "https://animeimports.net/products/star-wars-unlimted-constructed-wednesdays-ticket-46?ticket=star-wars-unlimted-constructed-wednesdays-ticket-51",
     },
     social: {
@@ -259,7 +249,6 @@ const stores = {
     },
     events: {
       weeklyPlay: "Tuesdays 6:00pm (Open), Wednesdays 6:00pm (Constructed)",
-      showdown: "TBD",
     },
     social: {
       facebook: "https://www.facebook.com/GameKastleFremont/",
@@ -283,7 +272,6 @@ const stores = {
     },
     events: {
       weeklyPlay: "Sundays 2:30pm",
-      showdown: "TBD",
       registrationUrl: "https://shop.illusivecomics.com/events/",
     },
     social: {
@@ -309,7 +297,6 @@ const stores = {
     },
     events: {
       weeklyPlay: "Tuesdays 7:00pm (Draft on last Tuesday of each month, otherwise Constructed)",
-      showdown: "TBD",
     },
     social: {
       facebook: "https://www.facebook.com/GameKastleRedwoodCity/",
@@ -333,7 +320,6 @@ const stores = {
     },
     events: {
       weeklyPlay: "Wednesdays 6:30pm",
-      showdown: "TBD",
       registrationUrl: "https://gamelandia.fun/products/star-wars-unlimited-draft",
     },
     social: {
@@ -349,14 +335,13 @@ const stores = {
       city: "Rocklin",
       state: "CA",
       zip: "95765",
-      googleMapsUrl: "https://www.google.com/maps/place/Fire+%26+Ice+Games/@38.7975,-121.2859,17z",
+      googleMapsUrl: "https://www.google.com/maps/place/Fire+%26+Ice+Games+Rocklin/@38.7975,-121.2859,17z/data=!3m1!4b1!4m6!3m5!1s0x809b1b4c8b8b8b8b:0x8b8b8b8b8b8b8b8b!8m2!3d38.7975!4d-121.2859!16s%2Fg%2F11b8b8b8b8",
     },
     contact: {
       phone: "(916) 771-2161"
     },
     events: {
       weeklyPlay: "Fridays 6:30pm",
-      showdown: "TBD",
     },
     social: {
       instagram: "https://www.instagram.com/fire.and.ice.games",
@@ -370,14 +355,13 @@ const stores = {
       city: "Citrus Heights",
       state: "CA",
       zip: "95610",
-      googleMapsUrl: "https://www.google.com/maps/place/Fire+%26+Ice+Games/@38.6784,-121.2728,17z",
+      googleMapsUrl: "https://www.google.com/maps/place/Fire+%26+Ice+Games+Citrus+Heights/@38.6784,-121.2728,17z/data=!3m1!4b1!4m6!3m5!1s0x809b1b4c8b8b8b8b:0x8b8b8b8b8b8b8b8b!8m2!3d38.6784!4d-121.2728!16s%2Fg%2F11b8b8b8b8",
     },
     contact: {
       phone: "(916) 910-9417"
     },
     events: {
       weeklyPlay: "Tuesdays 6:30pm",
-      showdown: "TBD",
     },
     social: {
       instagram: "https://www.instagram.com/fire.and.ice.games",
@@ -399,7 +383,6 @@ const stores = {
     },
     events: {
       weeklyPlay: "Thursdays 6:00pm",
-      showdown: "TBD",
     },
     social: {
     website: "https://www.goldstarcollectibles.com",
@@ -421,7 +404,6 @@ const stores = {
     },
     events: {
       weeklyPlay: "Mondays 6:30pm",
-      showdown: "TBD",
     },
     social: {
     facebook: "https://www.facebook.com/HHGSAC",
@@ -445,7 +427,6 @@ const stores = {
     },
     events: {
       weeklyPlay: "Thursdays 6:30pm",
-      showdown: "TBD",
       registrationUrl: "https://gamekastle.com/stores/sacramento",
     },
     social: {
@@ -468,13 +449,33 @@ const stores = {
     },
     events: {
       weeklyPlay: "Thursdays 6:00pm",
-      showdown: "May 4 (Time TBD)",
     },
     social: {
       website: "https://linktr.ee/GreenPotionGames",
       discord: "https://discord.gg/greenpotion",
       facebook: "https://www.facebook.com/GreenPotionGames",
       instagram: "https://www.instagram.com/greenpotiongames",
+    },
+  },
+  a1Comics: {
+    name: "A-1 Comics Roseville",
+    address: {
+      street: "818 Sunrise Ave.",
+      city: "Roseville",
+      state: "CA",
+      zip: "95661",
+      googleMapsUrl: "https://www.google.com/maps/place/A-1+Comics/data=!4m2!3m1!1s0x0:0x2e3c73b8fb4f7a05",
+    },
+    contact: {
+      phone: "(916) 783-8005"
+    },
+    events: {
+      weeklyPlay: "Sundays 1:00pm",
+    },
+    social: {
+      website: "https://a-1comics.com",
+      facebook: "https://www.facebook.com/a1comicsinc",
+      instagram: "https://www.instagram.com/a1comics/",
     },
   },
 };
@@ -562,7 +563,7 @@ export default function Home() {
       {/* Game Stores Section */}
       <section className="bg-white rounded-lg shadow-lg p-6">
         <h2 className="text-2xl font-bold mb-8 text-gray-900">Local Game Stores</h2>
-        
+
         {/* San Francisco */}
         <div className="mb-12">
           <h3 className="text-xl font-bold mb-6 text-gray-900 border-b pb-2">San Francisco</h3>
@@ -621,6 +622,7 @@ export default function Home() {
           <h3 className="text-xl font-bold mb-6 text-gray-900 border-b pb-2">Sacramento</h3>
           <p className="text-gray-800 text-sm mb-2">Your friendly local gaming stores supporting Star Wars: Unlimited in Sacramento, Davis, Folsom, Roseville, Rocklin, and Citrus Heights.</p>
           <div className="grid md:grid-cols-2 gap-8 auto-cols-min">
+            <StoreCard {...stores.a1Comics} />
             <StoreCard {...stores.fireAndIce} />
             <StoreCard {...stores.fireAndIceCitrusHeights} />
             <StoreCard {...stores.cardShopSac} />
