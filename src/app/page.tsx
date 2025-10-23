@@ -550,7 +550,7 @@ export default function Home() {
             Share strategies, trade cards, and make new friends in the community.
           </p>
           <Link
-            href="https://discord.gg/B4BxV3sAbD"
+            href="https://discord.gg/YJRtwBCMSa"
             className="inline-block bg-[#463E3F] text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-[#5865F2] transition-colors shadow-sm"
             target="_blank"
             rel="noopener noreferrer"
