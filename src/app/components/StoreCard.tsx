@@ -1,5 +1,13 @@
 import Link from "next/link";
-import { FaFacebook, FaGlobe, FaDiscord, FaPhone, FaEnvelope, FaShoppingCart, FaInstagram } from "react-icons/fa";
+import {
+  FaDiscord,
+  FaEnvelope,
+  FaFacebook,
+  FaGlobe,
+  FaInstagram,
+  FaPhone,
+  FaShoppingCart,
+} from "react-icons/fa";
 
 interface StoreCardProps {
   name: string;
@@ -28,31 +36,27 @@ interface StoreCardProps {
   };
 }
 
-export default function StoreCard({
-  name,
-  address,
-  contact,
-  events,
-  social,
-}: StoreCardProps) {
+export default function StoreCard({ name, address, contact, events, social }: StoreCardProps) {
   const fullAddress = `${address.street}, ${address.city}, ${address.state} ${address.zip}`;
   const mapQuery = `${name}+${address.street}+${address.city}+${address.state}+${address.zip}`;
 
   return (
-    <div className="bg-white rounded-lg shadow p-6">
-      <h3 className="text-xl font-bold mb-4 text-gray-900">{name}</h3>
-      <div className="aspect-video mb-4 relative overflow-hidden rounded-lg">
+    <div className="rounded-lg bg-white p-6 shadow">
+      <h3 className="mb-4 text-xl font-bold text-gray-900">{name}</h3>
+      <div className="relative mb-4 aspect-video overflow-hidden rounded-lg">
         <iframe
           src={`https://www.google.com/maps?q=${mapQuery}&output=embed`}
+          title={`Map of ${name}`}
           width="100%"
           height="100%"
+          loading="lazy"
         ></iframe>
       </div>
-      <div className="space-y-2 mb-4">
+      <div className="mb-4 space-y-2">
         <p className="font-semibold text-gray-900">Address:</p>
         <Link
           href={address.googleMapsUrl}
-          className="text-gray-900 hover:text-blue-600 flex items-center gap-2"
+          className="flex items-center gap-2 text-gray-900 hover:text-blue-600"
           target="_blank"
           rel="noopener noreferrer"
         >
@@ -61,12 +65,12 @@ export default function StoreCard({
 
         {(contact.phone || contact.email) && (
           <>
-            <p className="font-semibold mt-4 text-gray-900">Contact:</p>
+            <p className="mt-4 font-semibold text-gray-900">Contact:</p>
             {contact.phone && (
               <p className="flex items-center gap-2">
                 <FaPhone className="text-lg text-green-600" />
                 <Link
-                  href={`tel:${contact.phone.replace(/\D/g, '')}`}
+                  href={`tel:${contact.phone.replace(/\D/g, "")}`}
                   className="text-gray-900 hover:text-blue-600"
                 >
                   {contact.phone}
@@ -88,11 +92,11 @@ export default function StoreCard({
         )}
 
         {(social.website || social.store || social.discord || social.facebook || social.instagram) && (
-          <div className="flex gap-4 mt-4">
+          <div className="mt-4 flex gap-4">
             {social.website && (
               <Link
                 href={social.website}
-                className="text-cyan-600 hover:text-cyan-800 text-2xl"
+                className="text-2xl text-cyan-600 hover:text-cyan-800"
                 target="_blank"
                 rel="noopener noreferrer"
                 title="Website"
@@ -103,7 +107,7 @@ export default function StoreCard({
             {social.store && (
               <Link
                 href={social.store}
-                className="text-gray-600 hover:text-gray-800 text-2xl"
+                className="text-2xl text-gray-600 hover:text-gray-800"
                 target="_blank"
                 rel="noopener noreferrer"
                 title="Online Store"
@@ -114,7 +118,7 @@ export default function StoreCard({
             {social.discord && (
               <Link
                 href={social.discord}
-                className="text-[#5865F2] hover:text-[#4752C4] text-2xl"
+                className="text-2xl text-[#5865F2] hover:text-[#4752C4]"
                 target="_blank"
                 rel="noopener noreferrer"
                 title="Discord"
@@ -125,7 +129,7 @@ export default function StoreCard({
             {social.facebook && (
               <Link
                 href={social.facebook}
-                className="text-blue-600 hover:text-blue-800 text-2xl"
+                className="text-2xl text-blue-600 hover:text-blue-800"
                 target="_blank"
                 rel="noopener noreferrer"
                 title="Facebook"
@@ -136,7 +140,7 @@ export default function StoreCard({
             {social.instagram && (
               <Link
                 href={social.instagram}
-                className="text-pink-600 hover:text-pink-800 text-2xl"
+                className="text-2xl text-pink-600 hover:text-pink-800"
                 target="_blank"
                 rel="noopener noreferrer"
                 title="Instagram"
@@ -149,7 +153,7 @@ export default function StoreCard({
 
         {(events.weeklyPlay || events.showdown || events.registrationUrl) && (
           <>
-            <p className="font-semibold mt-4 text-gray-900">Events:</p>
+            <p className="mt-4 font-semibold text-gray-900">Events:</p>
             <div className="space-y-2">
               {events.weeklyPlay && (
                 <p className="text-gray-800">
@@ -166,7 +170,7 @@ export default function StoreCard({
               {events.registrationUrl && (
                 <Link
                   href={events.registrationUrl}
-                  className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors"
+                  className="inline-flex items-center gap-2 rounded-lg bg-blue-50 px-4 py-2 text-sm font-medium text-blue-600 transition-colors hover:bg-blue-100"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -179,4 +183,4 @@ export default function StoreCard({
       </div>
     </div>
   );
-} 
+}
