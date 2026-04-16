@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { IconType } from "react-icons";
 import {
   FaDiscord,
   FaEnvelope,
@@ -8,44 +9,68 @@ import {
   FaPhone,
   FaShoppingCart,
 } from "react-icons/fa";
+import type { StoreAddress, StoreEvents, StoreRecord, StoreSocial } from "../../lib/stores";
 
-interface StoreCardProps {
-  name: string;
-  address: {
-    street: string;
-    city: string;
-    state: string;
-    zip: string;
-    googleMapsUrl: string;
-  };
-  contact: {
-    phone: string;
-    email?: string;
-  };
-  events: {
-    weeklyPlay?: string;
-    showdown?: string;
-    registrationUrl?: string;
-  };
-  social: {
-    facebook?: string;
-    website?: string;
-    discord?: string;
-    store?: string;
-    instagram?: string;
-  };
-}
+const SOCIAL_LINK_CONFIGS: Array<{
+  className: string;
+  icon: IconType;
+  key: keyof StoreSocial;
+  title: string;
+}> = [
+  {
+    className: "text-2xl text-cyan-600 hover:text-cyan-800",
+    icon: FaGlobe,
+    key: "website",
+    title: "Website",
+  },
+  {
+    className: "text-2xl text-gray-600 hover:text-gray-800",
+    icon: FaShoppingCart,
+    key: "store",
+    title: "Online Store",
+  },
+  {
+    className: "text-2xl text-[#5865F2] hover:text-[#4752C4]",
+    icon: FaDiscord,
+    key: "discord",
+    title: "Discord",
+  },
+  {
+    className: "text-2xl text-blue-600 hover:text-blue-800",
+    icon: FaFacebook,
+    key: "facebook",
+    title: "Facebook",
+  },
+  {
+    className: "text-2xl text-pink-600 hover:text-pink-800",
+    icon: FaInstagram,
+    key: "instagram",
+    title: "Instagram",
+  },
+];
+const EVENT_DETAIL_CONFIGS: Array<{
+  key: keyof Pick<StoreEvents, "showdown" | "weeklyPlay">;
+  label: string;
+}> = [
+  { key: "weeklyPlay", label: "Weekly Play" },
+  { key: "showdown", label: "Store Showdown" },
+];
 
-export default function StoreCard({ name, address, contact, events, social }: StoreCardProps) {
+export default function StoreCard({ name, address, contact, events, social }: StoreRecord) {
   const fullAddress = `${address.street}, ${address.city}, ${address.state} ${address.zip}`;
-  const mapQuery = `${name}+${address.street}+${address.city}+${address.state}+${address.zip}`;
+  const mapEmbedUrl = buildMapEmbedUrl(name, address);
+  const socialLinks = getSocialLinks(social);
+  const eventDetails = getEventDetails(events);
+  const hasContact = Boolean(contact.phone || contact.email);
+  const hasSocialLinks = socialLinks.length > 0;
+  const hasEvents = eventDetails.length > 0 || Boolean(events.registrationUrl);
 
   return (
     <div className="rounded-lg bg-white p-6 shadow">
       <h3 className="mb-4 text-xl font-bold text-gray-900">{name}</h3>
       <div className="relative mb-4 aspect-video overflow-hidden rounded-lg">
         <iframe
-          src={`https://www.google.com/maps?q=${mapQuery}&output=embed`}
+          src={mapEmbedUrl}
           title={`Map of ${name}`}
           width="100%"
           height="100%"
@@ -63,7 +88,7 @@ export default function StoreCard({ name, address, contact, events, social }: St
           {fullAddress}
         </Link>
 
-        {(contact.phone || contact.email) && (
+        {hasContact && (
           <>
             <p className="mt-4 font-semibold text-gray-900">Contact:</p>
             {contact.phone && (
@@ -91,82 +116,33 @@ export default function StoreCard({ name, address, contact, events, social }: St
           </>
         )}
 
-        {(social.website || social.store || social.discord || social.facebook || social.instagram) && (
+        {hasSocialLinks && (
           <div className="mt-4 flex gap-4">
-            {social.website && (
+            {socialLinks.map(({ Icon, className, href, title }) => (
               <Link
-                href={social.website}
-                className="text-2xl text-cyan-600 hover:text-cyan-800"
+                key={title}
+                href={href}
+                className={className}
                 target="_blank"
                 rel="noopener noreferrer"
-                title="Website"
+                title={title}
               >
-                <FaGlobe />
+                <Icon />
               </Link>
-            )}
-            {social.store && (
-              <Link
-                href={social.store}
-                className="text-2xl text-gray-600 hover:text-gray-800"
-                target="_blank"
-                rel="noopener noreferrer"
-                title="Online Store"
-              >
-                <FaShoppingCart />
-              </Link>
-            )}
-            {social.discord && (
-              <Link
-                href={social.discord}
-                className="text-2xl text-[#5865F2] hover:text-[#4752C4]"
-                target="_blank"
-                rel="noopener noreferrer"
-                title="Discord"
-              >
-                <FaDiscord />
-              </Link>
-            )}
-            {social.facebook && (
-              <Link
-                href={social.facebook}
-                className="text-2xl text-blue-600 hover:text-blue-800"
-                target="_blank"
-                rel="noopener noreferrer"
-                title="Facebook"
-              >
-                <FaFacebook />
-              </Link>
-            )}
-            {social.instagram && (
-              <Link
-                href={social.instagram}
-                className="text-2xl text-pink-600 hover:text-pink-800"
-                target="_blank"
-                rel="noopener noreferrer"
-                title="Instagram"
-              >
-                <FaInstagram />
-              </Link>
-            )}
+            ))}
           </div>
         )}
 
-        {(events.weeklyPlay || events.showdown || events.registrationUrl) && (
+        {hasEvents && (
           <>
             <p className="mt-4 font-semibold text-gray-900">Events:</p>
             <div className="space-y-2">
-              {events.weeklyPlay && (
-                <p className="text-gray-800">
-                  <span className="font-medium">Weekly Play: </span>
-                  {events.weeklyPlay}
+              {eventDetails.map(({ key, label, value }) => (
+                <p key={key} className="text-gray-800">
+                  <span className="font-medium">{label}: </span>
+                  {value}
                 </p>
-              )}
-              {events.showdown && (
-                <p className="text-gray-800">
-                  <span className="font-medium">Store Showdown: </span>
-                  {events.showdown}
-                </p>
-              )}
+              ))}
               {events.registrationUrl && (
                 <Link
                   href={events.registrationUrl}
@@ -183,4 +159,43 @@ export default function StoreCard({ name, address, contact, events, social }: St
       </div>
     </div>
   );
+}
+
+function buildMapEmbedUrl(name: string, address: StoreAddress) {
+  const query = encodeURIComponent(
+    `${name} ${address.street} ${address.city} ${address.state} ${address.zip}`,
+  );
+
+  return `https://www.google.com/maps?q=${query}&output=embed`;
+}
+
+function getSocialLinks(social: StoreSocial) {
+  return SOCIAL_LINK_CONFIGS.flatMap((config) => {
+    const href = social[config.key];
+    return href
+      ? [
+          {
+            Icon: config.icon,
+            className: config.className,
+            href,
+            title: config.title,
+          },
+        ]
+      : [];
+  });
+}
+
+function getEventDetails(events: StoreEvents) {
+  return EVENT_DETAIL_CONFIGS.flatMap((config) => {
+    const value = events[config.key];
+    return value
+      ? [
+          {
+            key: config.key,
+            label: config.label,
+            value,
+          },
+        ]
+      : [];
+  });
 }

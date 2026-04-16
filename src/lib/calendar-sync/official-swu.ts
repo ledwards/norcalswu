@@ -1,3 +1,4 @@
+import { load } from "cheerio";
 import { DateTime } from "luxon";
 import { stores, type StoreRecord } from "../stores";
 import type { NormalizedCalendarEvent } from "./types";
@@ -13,6 +14,10 @@ const DEFAULT_LOOKAHEAD_DAYS = parseIntegerEnv(
 );
 const OFFICIAL_API_BASE_URL = "https://admin.starwarsunlimited.com/api";
 const OFFICIAL_FINDER_BASE_URL = "https://starwarsunlimited.com/search?type=events";
+const OFFICIAL_GC_HOME_URL = "https://galacticchampionship.starwarsunlimited.com/";
+const OFFICIAL_GC_VENUE_URL = "https://galacticchampionship.starwarsunlimited.com/2026/venue-info";
+const OFFICIAL_REGIONAL_PAGE_URL = "https://starwarsunlimited.com/regional-championships";
+const OFFICIAL_SECTOR_PAGE_URL = "https://starwarsunlimited.com/sector-qualifiers";
 const PAGE_SIZE = 100;
 const US_COUNTRY_CODES = new Set(["unitedstates", "unitedstatesofamerica", "usa", "us"]);
 const EVENT_TYPES = [
@@ -23,6 +28,10 @@ const EVENT_TYPES = [
 type OfficialEventType = (typeof EVENT_TYPES)[number];
 type OfficialEventTypeId = OfficialEventType["id"];
 type CompetitiveEventSlug = OfficialEventType["slug"];
+type OfficialMajorEventSlug =
+  | "sector-qualifier"
+  | "regional-championship"
+  | "galactic-championship";
 
 interface OfficialEventAddress {
   name?: string | null;
@@ -103,6 +112,17 @@ export interface UpcomingCompetitiveEvent {
   venueName?: string;
 }
 
+export interface UpcomingOfficialMajorEvent {
+  dateLabel: string;
+  displayUrl: string;
+  location: string;
+  startDate: string;
+  subtitle: string;
+  title: string;
+  typeLabel: string;
+  typeSlug: OfficialMajorEventSlug;
+}
+
 export async function collectOfficialFinderEvents(): Promise<NormalizedCalendarEvent[]> {
   const events = await getUpcomingCompetitiveEvents();
 
@@ -156,6 +176,26 @@ export async function getUpcomingCompetitiveEvents(): Promise<UpcomingCompetitiv
   return events.sort((left, right) => left.startDateTime.localeCompare(right.startDateTime));
 }
 
+export async function getUpcomingOfficialMajorEvents(): Promise<UpcomingOfficialMajorEvent[]> {
+  const [sectors, regionals, gc] = await Promise.all([
+    fetchOfficialMajorTableEvents({
+      pageUrl: OFFICIAL_SECTOR_PAGE_URL,
+      typeLabel: "Sector Qualifier",
+      typeSlug: "sector-qualifier",
+    }),
+    fetchOfficialMajorTableEvents({
+      pageUrl: OFFICIAL_REGIONAL_PAGE_URL,
+      typeLabel: "Regional Championship",
+      typeSlug: "regional-championship",
+    }),
+    fetchOfficialGalacticChampionshipEvent(),
+  ]);
+
+  return [...sectors, ...regionals, ...(gc ? [gc] : [])].sort((left, right) =>
+    left.startDate.localeCompare(right.startDate),
+  );
+}
+
 async function fetchOfficialEvents(eventType: OfficialEventType): Promise<OfficialEventRecord[]> {
   const records: OfficialEventRecord[] = [];
   let page = 1;
@@ -196,6 +236,124 @@ async function fetchOfficialEvents(eventType: OfficialEventType): Promise<Offici
   } while (page <= pageCount);
 
   return records;
+}
+
+async function fetchOfficialMajorTableEvents({
+  pageUrl,
+  typeLabel,
+  typeSlug,
+}: {
+  pageUrl: string;
+  typeLabel: string;
+  typeSlug: Extract<OfficialMajorEventSlug, "sector-qualifier" | "regional-championship">;
+}): Promise<UpcomingOfficialMajorEvent[]> {
+  const html = await fetchOfficialHtml(pageUrl);
+  const $ = load(html);
+  const now = DateTime.now().setZone(DEFAULT_TIMEZONE).startOf("day");
+  const events: UpcomingOfficialMajorEvent[] = [];
+
+  for (const heading of $("h1").toArray().slice(1)) {
+    const headingText = cleanText($(heading).text());
+    const seasonLabel = getSeasonLabel(headingText, typeLabel);
+    const table = $(heading).nextUntil("h1").filter("figure.table").first().find("table").first();
+
+    if (!table.length) {
+      continue;
+    }
+
+    for (const row of table.find("tr").slice(1).toArray()) {
+      const cells = $(row).children("th, td").toArray();
+      if (cells.length < 5) {
+        continue;
+      }
+
+      const dateInfo = parseDateRangeLabel(cleanText($(cells[0]).text()), now);
+      if (!dateInfo) {
+        continue;
+      }
+
+      const venueText = cleanText($(cells[1]).text());
+      const format = cleanText($(cells[2]).text());
+      const city = cleanText($(cells[3]).text());
+      const stateCountry = cleanText($(cells[4]).text());
+      const href = cleanText($(cells[1]).find("a").attr("href"));
+
+      if (!isUnitedStatesLocation(stateCountry)) {
+        continue;
+      }
+
+      const locationLabel = city || stateCountry;
+
+      events.push({
+        dateLabel: dateInfo.label,
+        displayUrl: toAbsoluteUrl(pageUrl, href) || pageUrl,
+        location: [city, stateCountry].filter(Boolean).join(", ") || locationLabel,
+        startDate: dateInfo.startDate,
+        subtitle: [format, venueText].filter(Boolean).join(" | ") || typeLabel,
+        title: buildOfficialMajorEventTitle(seasonLabel, typeLabel, locationLabel),
+        typeLabel,
+        typeSlug,
+      });
+    }
+  }
+
+  return events;
+}
+
+async function fetchOfficialGalacticChampionshipEvent(): Promise<UpcomingOfficialMajorEvent | null> {
+  const [homeHtml, venueHtml] = await Promise.all([
+    fetchOfficialHtml(OFFICIAL_GC_HOME_URL),
+    fetchOfficialHtml(OFFICIAL_GC_VENUE_URL),
+  ]);
+  const homePage = load(homeHtml);
+  const venuePage = load(venueHtml);
+  const now = DateTime.now().setZone(DEFAULT_TIMEZONE).startOf("day");
+  const locationLine =
+    homePage("p")
+      .toArray()
+      .map((element) => cleanText(homePage(element).text()))
+      .find((value) => /\|/.test(value) && /\b[A-Za-z]+\s+\d{1,2}-\d{1,2},\s+\d{4}\b/.test(value)) || "";
+  const dateText = cleanText(locationLine.split("|")[0]);
+  const cityLabel = cleanText(locationLine.split("|")[1]);
+  const dateInfo = parseDateRangeLabel(dateText, now);
+
+  if (!dateInfo) {
+    return null;
+  }
+
+  const venueText =
+    venuePage("p")
+      .toArray()
+      .map((element) => cleanText(venuePage(element).text()))
+      .find((value) => /\bLas Vegas,\s*NV\b/.test(value) && /\d/.test(value)) || "";
+  const venueName = cleanText(venueText.match(/^(.+?)\s+\d/)?.[1]);
+  const location = venueName ? `${venueName}, ${cityLabel}` : cityLabel;
+
+  return {
+    dateLabel: dateInfo.label,
+    displayUrl: OFFICIAL_GC_HOME_URL,
+    location: location || "Las Vegas, USA",
+    startDate: dateInfo.startDate,
+    subtitle: venueName || "Official Galactic Championship site",
+    title: "Galactic Championship 2026",
+    typeLabel: "Galactic Championship",
+    typeSlug: "galactic-championship",
+  };
+}
+
+async function fetchOfficialHtml(url: string): Promise<string> {
+  const response = await fetch(url, {
+    headers: {
+      "user-agent": "NorCalSWU Calendar Sync/1.0 (+https://www.norcalswu.com)",
+    },
+    next: { revalidate: 1800 },
+  });
+
+  if (!response.ok) {
+    throw new Error(`received ${response.status} from ${url}`);
+  }
+
+  return response.text();
 }
 
 function normalizeOfficialEvent(record: OfficialEventRecord): UpcomingCompetitiveEvent | null {
@@ -403,6 +561,11 @@ function buildEventTitle(storeName: string, eventName: string, eventTypeLabel: s
     : eventName;
 }
 
+function buildOfficialMajorEventTitle(seasonLabel: string, typeLabel: string, locationLabel: string) {
+  const base = [seasonLabel, typeLabel].filter(Boolean).join(" ");
+  return locationLabel ? `${base} - ${locationLabel}` : base;
+}
+
 function buildDescription(parts: Array<string | undefined>): string | undefined {
   const description = parts
     .map((part) => cleanText(part))
@@ -410,6 +573,14 @@ function buildDescription(parts: Array<string | undefined>): string | undefined 
     .join("\n\n");
 
   return description || undefined;
+}
+
+function getSeasonLabel(headingText: string, typeLabel: string): string {
+  const normalized = cleanText(headingText);
+  const singularPattern = new RegExp(`\\b${typeLabel}\\b`, "i");
+  const pluralPattern = new RegExp(`\\b${typeLabel}s\\b`, "i");
+
+  return normalized.replace(pluralPattern, "").replace(singularPattern, "").trim();
 }
 
 function normalizeForMatch(value?: string | null): string {
@@ -433,8 +604,111 @@ function normalizeCountry(value?: string | null): string {
   return normalizeForMatch(value).replace(/\s+/g, "");
 }
 
+function isUnitedStatesLocation(value: string) {
+  return /\b(USA|US|United States|United States of America)\b/i.test(value);
+}
+
 function cleanText(value?: string | null): string {
   return value?.replace(/\s+/g, " ").trim() || "";
+}
+
+function parseDateRangeLabel(
+  value: string,
+  now: DateTime,
+): {
+  label: string;
+  startDate: string;
+} | null {
+  const crossMonthMatch =
+    value.match(/^([A-Za-z]+)\s+(\d{1,2})-([A-Za-z]+)\s+(\d{1,2})(?:,\s*(\d{4}))?$/) || null;
+  if (crossMonthMatch) {
+    const [, startMonth, startDay, endMonth, endDay, explicitYear] = crossMonthMatch;
+    const year = getCompetitiveEventYear(startMonth, Number.parseInt(startDay, 10), explicitYear, now);
+    const start = DateTime.fromFormat(`${startMonth} ${startDay} ${year}`, "LLLL d yyyy", {
+      zone: DEFAULT_TIMEZONE,
+    });
+    const end = DateTime.fromFormat(`${endMonth} ${endDay} ${year}`, "LLLL d yyyy", {
+      zone: DEFAULT_TIMEZONE,
+    });
+
+    if (start.isValid && end.isValid && start >= now) {
+      return {
+        label: formatDateRange(start, end),
+        startDate: start.toISODate() || "",
+      };
+    }
+  }
+
+  const sameMonthMatch =
+    value.match(/^([A-Za-z]+)\s+(\d{1,2})(?:-(\d{1,2}))?(?:,\s*(\d{4}))?$/) || null;
+  if (!sameMonthMatch) {
+    return null;
+  }
+
+  const [, month, startDay, maybeEndDay, explicitYear] = sameMonthMatch;
+  const year = getCompetitiveEventYear(month, Number.parseInt(startDay, 10), explicitYear, now);
+  const endDay = maybeEndDay || startDay;
+  const start = DateTime.fromFormat(`${month} ${startDay} ${year}`, "LLLL d yyyy", {
+    zone: DEFAULT_TIMEZONE,
+  });
+  const end = DateTime.fromFormat(`${month} ${endDay} ${year}`, "LLLL d yyyy", {
+    zone: DEFAULT_TIMEZONE,
+  });
+
+  if (!start.isValid || !end.isValid || start < now) {
+    return null;
+  }
+
+  return {
+    label: formatDateRange(start, end),
+    startDate: start.toISODate() || "",
+  };
+}
+
+function getCompetitiveEventYear(
+  month: string,
+  day: number,
+  explicitYear: string | undefined,
+  now: DateTime,
+) {
+  if (explicitYear) {
+    return Number.parseInt(explicitYear, 10);
+  }
+
+  const thisYear = DateTime.fromFormat(`${month} ${day} ${now.year}`, "LLLL d yyyy", {
+    zone: DEFAULT_TIMEZONE,
+  });
+
+  return thisYear.isValid && thisYear >= now ? now.year : now.year + 1;
+}
+
+function formatDateRange(start: DateTime, end: DateTime): string {
+  if (start.hasSame(end, "day")) {
+    return start.toFormat("MMM d, yyyy");
+  }
+
+  if (start.year === end.year && start.month === end.month) {
+    return `${start.toFormat("MMM d")}-${end.toFormat("d, yyyy")}`;
+  }
+
+  if (start.year === end.year) {
+    return `${start.toFormat("MMM d")}-${end.toFormat("MMM d, yyyy")}`;
+  }
+
+  return `${start.toFormat("MMM d, yyyy")}-${end.toFormat("MMM d, yyyy")}`;
+}
+
+function toAbsoluteUrl(baseUrl: string, href?: string | null): string {
+  const value = cleanText(href);
+  if (!value) {
+    return "";
+  }
+
+  try {
+    return new URL(value, baseUrl).toString();
+  } catch {
+    return value;
+  }
 }
 
 function parseIntegerEnv(value: string | undefined, fallback: number): number {
