@@ -143,7 +143,7 @@ export default function CalendarWidget({
   return (
     <div className="space-y-4">
       <div className="rounded-xl border border-gray-200 bg-white p-4">
-        <div className="flex items-center gap-2 overflow-x-auto pb-1">
+        <div className="flex flex-wrap items-center gap-2">
           <span className="shrink-0 text-xs font-semibold uppercase tracking-[0.18em] text-gray-500">
             Regions
           </span>
@@ -154,9 +154,11 @@ export default function CalendarWidget({
                 setSelectedRegionIds(allRegionsSelected ? [] : regions.map((region) => region.id));
               })
             }
-            className="shrink-0 rounded-full border border-gray-300 px-3 py-1 text-xs font-medium text-gray-700 transition-colors hover:bg-gray-50"
+            aria-label={allRegionsSelected ? "Clear all regions" : "Select all regions"}
+            title={allRegionsSelected ? "Clear all regions" : "Select all regions"}
+            className="shrink-0 rounded-full border border-gray-300 px-2.5 py-1 text-xs font-medium uppercase text-gray-700 transition-colors hover:bg-gray-50"
           >
-            {allRegionsSelected ? "Clear all" : "Select all"}
+            X
           </button>
 
           {regions.map((region) => {

@@ -140,7 +140,7 @@ function buildPublicCalendarRegions(
     });
   }
 
-  return Array.from(regions.values()).sort((left, right) => left.title.localeCompare(right.title));
+  return Array.from(regions.values());
 }
 
 function buildStoreMeta(storeId: string): PublicCalendarStoreMeta | undefined {

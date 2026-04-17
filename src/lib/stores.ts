@@ -678,22 +678,28 @@ export const storeRegions: StoreRegion[] = [
     ],
   },
   {
-    id: "peninsula",
-    title: "Peninsula",
-    description: "Your friendly local gaming stores supporting Star Wars: Unlimited in San Mateo, Redwood City, Burlingame, and San Carlos.",
-    storeIds: ["animeImports", "gameKastleRedwood"],
-  },
-  {
     id: "south-bay",
     title: "South Bay",
     description: "Your friendly local gaming stores supporting Star Wars: Unlimited in San Jose, Santa Clara, Mountain View, Sunnyvale, and Cupertino.",
     storeIds: ["illusiveComics", "gamelandia"],
   },
   {
+    id: "peninsula",
+    title: "Peninsula",
+    description: "Your friendly local gaming stores supporting Star Wars: Unlimited in San Mateo, Redwood City, Burlingame, and San Carlos.",
+    storeIds: ["animeImports", "gameKastleRedwood"],
+  },
+  {
     id: "north-bay",
     title: "North Bay",
     description: "Your friendly local gaming stores supporting Star Wars: Unlimited in San Rafael, Novato, Santa Rosa, and Petaluma.",
     storeIds: ["gameFortress"],
+  },
+  {
+    id: "central-coast",
+    title: "Central Coast",
+    description: "Your friendly local gaming stores supporting Star Wars: Unlimited in Monterey, Santa Cruz, and Salinas.",
+    storeIds: ["greenPotion"],
   },
   {
     id: "sacramento",
@@ -707,12 +713,6 @@ export const storeRegions: StoreRegion[] = [
       "hammerhead",
       "gameKastleSac",
     ],
-  },
-  {
-    id: "central-coast",
-    title: "Central Coast",
-    description: "Your friendly local gaming stores supporting Star Wars: Unlimited in Monterey, Santa Cruz, and Salinas.",
-    storeIds: ["greenPotion"],
   },
 ];
 
