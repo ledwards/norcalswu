@@ -157,6 +157,15 @@ export const stores: StoreMap = {
       instagram: "https://www.instagram.com/gamesofberkeley/",
       store: "https://gamesofberkeley.com/products",
     },
+    sync: {
+      trackedPages: [
+        {
+          id: "games-of-berkeley-event-info",
+          label: "Games of Berkeley event info",
+          url: "https://gamesofberkeley.com/products/calendar-and-event-info",
+        },
+      ],
+    },
   },
   gamesOfFremont: {
     name: "Games of Fremont",
@@ -175,8 +184,18 @@ export const stores: StoreMap = {
       weeklyPlay: "Thursdays 6:30pm",
     },
     social: {
+      website: "https://www.gamesoffremont.com/",
       facebook: "https://www.facebook.com/gamesoffremont/",
       instagram: "https://www.instagram.com/gamesoffremont/",
+    },
+    sync: {
+      trackedPages: [
+        {
+          id: "games-of-fremont-main",
+          label: "Games of Fremont website",
+          url: "https://www.gamesoffremont.com/",
+        },
+      ],
     },
   },
   gamesOfMartinez: {
@@ -246,6 +265,20 @@ export const stores: StoreMap = {
       instagram: "https://www.instagram.com/88cardhouse/",
       discord: "https://discord.gg/bEwP86uaUJ",
     },
+    sync: {
+      trackedPages: [
+        {
+          id: "88-cardhouse-calendar",
+          label: "88 Cardhouse calendar page",
+          url: "https://www.88cardhouse.com/pages/88-calendar",
+        },
+        {
+          id: "88-cardhouse-star-wars",
+          label: "88 Cardhouse Star Wars collection",
+          url: "https://www.88cardhouse.com/collections/star-wars",
+        },
+      ],
+    },
   },
   gameFortress: {
     name: "The Game Fortress",
@@ -271,6 +304,13 @@ export const stores: StoreMap = {
       discord: "https://discord.gg/vaJDyMFAtW",
     },
     sync: {
+      trackedPages: [
+        {
+          id: "game-fortress-events",
+          label: "The Game Fortress events page",
+          url: "https://www.thegamefortress.store/events",
+        },
+      ],
       swuapiAliases: ["Game Fortress"],
     },
   },
@@ -296,6 +336,15 @@ export const stores: StoreMap = {
       website: "https://www.animeimports.net/",
       instagram: "https://www.instagram.com/animeimports/",
     },
+    sync: {
+      trackedPages: [
+        {
+          id: "anime-imports-events",
+          label: "Anime Imports events page",
+          url: "https://www.animeimports.net/pages/events",
+        },
+      ],
+    },
   },
   gameKastleFremont: {
     name: "Game Kastle Fremont",
@@ -320,6 +369,13 @@ export const stores: StoreMap = {
       discord: "https://discord.gg/gamekastle",
     },
     sync: {
+      trackedPages: [
+        {
+          id: "game-kastle-fremont-calendar",
+          label: "Game Kastle Fremont event calendar",
+          url: "https://gamekastle.com/pages/fremont-ca-event-calendar",
+        },
+      ],
       swuapiAliases: ["Game Kastle"],
     },
   },
@@ -347,6 +403,15 @@ export const stores: StoreMap = {
       discord: "https://discord.com/invite/n4V9z3G",
       store: "https://shop.illusivecomics.com",
     },
+    sync: {
+      trackedPages: [
+        {
+          id: "illusive-star-wars-events",
+          label: "Illusive Comics Star Wars event listings",
+          url: "https://shop.illusivecomics.com/events/game/star-wars-unlimited/",
+        },
+      ],
+    },
   },
   gameKastleRedwood: {
     name: "Game Kastle Redwood City",
@@ -371,6 +436,13 @@ export const stores: StoreMap = {
       discord: "https://discord.gg/JuJP4JBSUa",
     },
     sync: {
+      trackedPages: [
+        {
+          id: "game-kastle-redwood-calendar",
+          label: "Game Kastle Redwood City event calendar",
+          url: "https://gamekastle.com/pages/redwood-city-ca-event-calendar",
+        },
+      ],
       swuapiAliases: ["Game Kastle"],
     },
   },
@@ -394,6 +466,15 @@ export const stores: StoreMap = {
       facebook: "https://www.facebook.com/gamelandia.fun",
       website: "https://www.gamelandia.fun/",
       instagram: "https://www.instagram.com/gamelandia.fun/",
+    },
+    sync: {
+      trackedPages: [
+        {
+          id: "gamelandia-star-wars",
+          label: "Gamelandia Star Wars Unlimited collection",
+          url: "https://www.gamelandia.fun/collections/star-wars-unlimited",
+        },
+      ],
     },
   },
   fireAndIce: {
@@ -502,6 +583,13 @@ export const stores: StoreMap = {
       discord: "https://discord.gg/gamekastle",
     },
     sync: {
+      trackedPages: [
+        {
+          id: "game-kastle-sac-calendar",
+          label: "Game Kastle Sacramento event calendar",
+          url: "https://gamekastle.com/pages/sacramento-ca-event-calendar",
+        },
+      ],
       swuapiAliases: ["Game Kastle"],
     },
   },
@@ -526,6 +614,15 @@ export const stores: StoreMap = {
       facebook: "https://www.facebook.com/GreenPotionGames",
       instagram: "https://www.instagram.com/greenpotiongames",
     },
+    sync: {
+      trackedPages: [
+        {
+          id: "green-potion-linktree",
+          label: "Green Potion Games link hub",
+          url: "https://linktr.ee/GreenPotionGames",
+        },
+      ],
+    },
   },
   a1Comics: {
     name: "A-1 Comics Roseville",
@@ -548,6 +645,13 @@ export const stores: StoreMap = {
       instagram: "https://www.instagram.com/a1comics/",
     },
     sync: {
+      trackedPages: [
+        {
+          id: "a1-comics-events",
+          label: "A-1 Comics events page",
+          url: "https://a-1comics.com/events/",
+        },
+      ],
       swuapiAliases: ["A-1 Comics"],
     },
   },

@@ -35,6 +35,23 @@ const WEEKLY_PLAY_SEGMENT_PATTERN =
   /(Mondays?|Tuesdays?|Wednesdays?|Thursdays?|Fridays?|Saturdays?|Sundays?)\s+(\d{1,2}:\d{2}\s*[ap]m)(?:\s*\(([^)]+)\))?/gi;
 const MONTH_NAME_PATTERN =
   /\b(january|february|march|april|may|june|july|august|september|october|november|december)\b/i;
+const GOOGLE_CALENDAR_EMBED_PATTERN =
+  /https:\/\/calendar\.google\.com\/calendar\/embed\?[^"'\\\s<>]+/gi;
+const TRACKED_LINK_HINT_PATTERN =
+  /\b(event|calendar|ticket|register|registration|star[- ]?wars|unlimited|swu|showdown|qualifier|prerelease|premier|sealed|draft|tournament)\b/i;
+const TRACKED_EVENT_HINT_PATTERN =
+  /\b(ticket|event|showdown|qualifier|tournament|league|register|registration|weekly play|open play|constructed|sealed|draft|premier)\b/i;
+const TRACKED_DISCOVERY_PATH_PATTERN =
+  /\/(events?|collections?|products?|pages?|shop|search)\b/i;
+const GOOGLE_CALENDAR_BASE64_PATTERN = /^[A-Za-z0-9+/=]+$/;
+const NON_EVENT_PRODUCT_PATTERN =
+  /\b(booster box|booster pack|carbonite|spotlight starter|starter deck|two-player starter|playmat|sleeves|deck pod|booster display|case)\b/i;
+const MAX_DISCOVERED_TRACKED_LINKS = 12;
+
+interface IcsPropertyValue {
+  params: string[];
+  value: string;
+}
 
 interface WeeklyPlaySlot {
   weekday: WeekdayNumbers;
@@ -277,35 +294,36 @@ function getTrackedPageSources(): ResolvedPageSource[] {
 async function buildTrackedPageEvents(
   source: ResolvedPageSource,
 ): Promise<NormalizedCalendarEvent[]> {
-  const response = await fetch(source.url, {
-    headers: {
-      "user-agent": "NorCalSWU Calendar Sync/1.0 (+https://norcalswu.local)",
-    },
-    next: { revalidate: 0 },
-  });
+  const html = await fetchTrackedPageHtml(source.url);
+  const events = await extractTrackedPageEventsFromHtml(html, source, source.url);
 
-  if (!response.ok) {
-    throw new Error(`received ${response.status} from ${source.url}`);
+  if (!shouldDiscoverTrackedLinks(source.url)) {
+    return filterTrackedPageEvents(events, source);
   }
 
-  const html = await response.text();
-  const $ = load(html);
+  const discoveredLinks = extractTrackedPageLinks(load(html), source);
+  if (!discoveredLinks.length) {
+    return filterTrackedPageEvents(events, source);
+  }
 
-  const events = [
-    ...extractJsonLdEvents($, source),
-    ...extractSemanticDateEvents($, source),
-  ];
+  const discoveredEvents = await Promise.all(
+    discoveredLinks.map(async (url) => {
+      try {
+        const childHtml = await fetchTrackedPageHtml(url);
+        return await extractTrackedPageEventsFromHtml(childHtml, source, url);
+      } catch {
+        return [];
+      }
+    }),
+  );
 
-  return dedupeEvents(events).filter((event) => {
-    const haystack = `${event.title}\n${event.description || ""}`.toLowerCase();
-    const keywords = source.keywords || DEFAULT_KEYWORDS;
-    return keywords.length === 0 || keywords.some((keyword) => haystack.includes(keyword));
-  });
+  return filterTrackedPageEvents([...events, ...discoveredEvents.flat()], source);
 }
 
 function extractJsonLdEvents(
   $: ReturnType<typeof load>,
   source: ResolvedPageSource,
+  pageUrl: string,
 ): NormalizedCalendarEvent[] {
   const events: NormalizedCalendarEvent[] = [];
 
@@ -325,7 +343,7 @@ function extractJsonLdEvents(
         {
           title: asString(record.name),
           description: asString(record.description),
-          url: asString(record.url) || source.url,
+          url: asString(record.url) || pageUrl,
           location:
             getNestedString(record, ["location", "name"]) ||
             getNestedString(record, ["location", "address", "streetAddress"]) ||
@@ -334,6 +352,7 @@ function extractJsonLdEvents(
           endDate: asString(record.endDate),
         },
         source,
+        pageUrl,
       );
 
       if (normalized) {
@@ -348,9 +367,11 @@ function extractJsonLdEvents(
 function extractSemanticDateEvents(
   $: ReturnType<typeof load>,
   source: ResolvedPageSource,
+  pageUrl: string,
 ): NormalizedCalendarEvent[] {
   const titleCandidates = new Set<string>();
   const dateCandidates = new Set<string>();
+  const keywords = source.keywords || DEFAULT_KEYWORDS;
 
   $("h1, h2, h3, h4, [itemprop='name'], .product-title, .product-block__title").each(
     (_, element) => {
@@ -382,8 +403,8 @@ function extractSemanticDateEvents(
   }
 
   const dateStrings = Array.from(dateCandidates);
-  const titles = Array.from(titleCandidates).filter((title) =>
-    (source.keywords || DEFAULT_KEYWORDS).some((keyword) => title.toLowerCase().includes(keyword)),
+  const titles = Array.from(titleCandidates).filter(
+    (title) => keywords.length === 0 || keywords.some((keyword) => title.toLowerCase().includes(keyword)),
   );
 
   if (!titles.length || !dateStrings.length) {
@@ -397,11 +418,12 @@ function extractSemanticDateEvents(
         {
           title,
           description: `Discovered on ${source.label}.`,
-          url: source.url,
+          url: pageUrl,
           location: source.location,
           startDate: candidate,
         },
         source,
+        pageUrl,
       );
 
       if (normalized) {
@@ -423,9 +445,16 @@ function normalizeStructuredEvent(
     endDate?: string;
   },
   source: ResolvedPageSource,
+  pageUrl: string,
 ): NormalizedCalendarEvent | null {
   const title = cleanText(raw.title);
-  if (!title || !(source.keywords || DEFAULT_KEYWORDS).some((keyword) => title.toLowerCase().includes(keyword))) {
+  const keywords = source.keywords || DEFAULT_KEYWORDS;
+  if (!title || (keywords.length > 0 && !keywords.some((keyword) => title.toLowerCase().includes(keyword)))) {
+    return null;
+  }
+
+  const resolvedUrl = resolveTrackedUrl(pageUrl, raw.url || pageUrl);
+  if (looksLikeMerchandiseListing(title, raw.description, resolvedUrl)) {
     return null;
   }
 
@@ -452,7 +481,10 @@ function normalizeStructuredEvent(
   );
 
   return {
-    sourceUid: buildSourceUid("tracked-page", `${source.id}:${title}:${startDate.value.toISO()}`),
+    sourceUid: buildSourceUid(
+      "tracked-page",
+      `${source.id}:${resolvedUrl}:${title}:${startDate.value.toISO()}`,
+    ),
     sourceType: "tracked-page",
     sourceLabel: source.label,
     storeId: source.storeId,
@@ -460,13 +492,472 @@ function normalizeStructuredEvent(
     description: buildDescription([
       raw.description,
       `Imported from ${source.label}.`,
-      raw.url && raw.url !== source.url ? `Original listing: ${raw.url}` : undefined,
+      resolvedUrl && resolvedUrl !== source.url ? `Original listing: ${resolvedUrl}` : undefined,
     ]),
     location: raw.location || source.location,
-    url: raw.url || source.url,
+    url: resolvedUrl,
     start,
     end,
   };
+}
+
+async function fetchTrackedPageHtml(url: string): Promise<string> {
+  const response = await fetch(url, {
+    headers: {
+      "user-agent": "NorCalSWU Calendar Sync/1.0 (+https://norcalswu.local)",
+    },
+    next: { revalidate: 0 },
+  });
+
+  if (!response.ok) {
+    throw new Error(`received ${response.status} from ${url}`);
+  }
+
+  return response.text();
+}
+
+async function extractTrackedPageEventsFromHtml(
+  html: string,
+  source: ResolvedPageSource,
+  pageUrl: string,
+): Promise<NormalizedCalendarEvent[]> {
+  const $ = load(html);
+
+  const embeddedGoogleCalendarEvents = await extractEmbeddedGoogleCalendarEvents(
+    html,
+    source,
+    pageUrl,
+  );
+
+  return [
+    ...extractJsonLdEvents($, source, pageUrl),
+    ...extractSemanticDateEvents($, source, pageUrl),
+    ...embeddedGoogleCalendarEvents,
+  ];
+}
+
+function filterTrackedPageEvents(
+  events: NormalizedCalendarEvent[],
+  source: ResolvedPageSource,
+): NormalizedCalendarEvent[] {
+  const keywords = source.keywords || DEFAULT_KEYWORDS;
+  const filteredEvents = dedupeEvents(events).filter((event) =>
+    matchesTrackedKeywords(event, keywords),
+  );
+  const byIdentity = new Map<string, NormalizedCalendarEvent>();
+
+  for (const event of filteredEvents) {
+    const identity = buildTrackedEventIdentity(event);
+    if (!byIdentity.has(identity)) {
+      byIdentity.set(identity, event);
+    }
+  }
+
+  return dedupeEvents(Array.from(byIdentity.values()));
+}
+
+function matchesTrackedKeywords(event: NormalizedCalendarEvent, keywords: string[]) {
+  const haystack = `${event.title}\n${event.description || ""}\n${event.url || ""}`.toLowerCase();
+  return keywords.length === 0 || keywords.some((keyword) => haystack.includes(keyword));
+}
+
+function buildTrackedEventIdentity(event: NormalizedCalendarEvent): string {
+  return [
+    event.storeId || "",
+    cleanText(event.title).toLowerCase(),
+    event.start.dateTime || event.start.date || "",
+    event.end.dateTime || event.end.date || "",
+    cleanText(event.location).toLowerCase(),
+  ].join("::");
+}
+
+function shouldDiscoverTrackedLinks(pageUrl: string) {
+  try {
+    const { pathname, search } = new URL(pageUrl);
+    return TRACKED_DISCOVERY_PATH_PATTERN.test(`${pathname}${search}`);
+  } catch {
+    return false;
+  }
+}
+
+function extractTrackedPageLinks(
+  $: ReturnType<typeof load>,
+  source: ResolvedPageSource,
+): string[] {
+  const baseUrl = new URL(source.url);
+  const candidates = new Map<string, number>();
+  const keywords = source.keywords || DEFAULT_KEYWORDS;
+
+  $("a[href]").each((_, element) => {
+    const href = $(element).attr("href");
+    const text = cleanText($(element).text());
+    const resolvedUrl = resolveTrackedCandidateUrl(baseUrl, href);
+
+    if (!resolvedUrl) {
+      return;
+    }
+
+    const score = scoreTrackedPageLink(resolvedUrl, text, keywords);
+    if (score <= 0) {
+      return;
+    }
+
+    const previous = candidates.get(resolvedUrl) || 0;
+    if (score > previous) {
+      candidates.set(resolvedUrl, score);
+    }
+  });
+
+  return Array.from(candidates.entries())
+    .sort((left, right) => right[1] - left[1])
+    .slice(0, MAX_DISCOVERED_TRACKED_LINKS)
+    .map(([url]) => url);
+}
+
+function resolveTrackedCandidateUrl(baseUrl: URL, href?: string | null): string | null {
+  if (!href) {
+    return null;
+  }
+
+  if (
+    href.startsWith("#") ||
+    href.startsWith("mailto:") ||
+    href.startsWith("tel:") ||
+    href.startsWith("javascript:")
+  ) {
+    return null;
+  }
+
+  try {
+    const resolvedUrl = new URL(href, baseUrl);
+    const assetPathPattern = /\.(?:avif|css|gif|ico|jpeg|jpg|js|json|pdf|png|svg|txt|webp|xml)$/i;
+
+    if (resolvedUrl.origin !== baseUrl.origin) {
+      return null;
+    }
+
+    if (assetPathPattern.test(resolvedUrl.pathname)) {
+      return null;
+    }
+
+    if (
+      resolvedUrl.pathname === baseUrl.pathname &&
+      resolvedUrl.search === baseUrl.search
+    ) {
+      return null;
+    }
+
+    return resolvedUrl.toString();
+  } catch {
+    return null;
+  }
+}
+
+function scoreTrackedPageLink(resolvedUrl: string, text: string, keywords: string[]) {
+  let score = 0;
+  const combined = `${resolvedUrl} ${text}`.toLowerCase();
+
+  if (keywords.length > 0) {
+    score += keywords.reduce((total, keyword) => total + (combined.includes(keyword) ? 3 : 0), 0);
+  }
+
+  if (TRACKED_LINK_HINT_PATTERN.test(combined)) {
+    score += 4;
+  }
+
+  if (resolvedUrl.includes("/events")) {
+    score += 4;
+  }
+
+  if (resolvedUrl.includes("/products/")) {
+    score += 2;
+  }
+
+  if (resolvedUrl.includes("/collections/")) {
+    score += 1;
+  }
+
+  if (!text) {
+    score -= 1;
+  }
+
+  if (keywords.length === 0 && resolvedUrl.includes("/products/")) {
+    score += 2;
+  }
+
+  return score >= (keywords.length === 0 ? 2 : 3) ? score : 0;
+}
+
+async function extractEmbeddedGoogleCalendarEvents(
+  rawHtml: string,
+  source: ResolvedPageSource,
+  pageUrl: string,
+): Promise<NormalizedCalendarEvent[]> {
+  const calendarIds = extractGoogleCalendarIds(rawHtml);
+  if (!calendarIds.length) {
+    return [];
+  }
+
+  const results = await Promise.all(
+    calendarIds.map(async (calendarId) => {
+      try {
+        const ics = await fetchGoogleCalendarIcs(calendarId);
+        return parseGoogleCalendarEvents(ics, source, pageUrl, calendarId);
+      } catch {
+        return [];
+      }
+    }),
+  );
+
+  return results.flat();
+}
+
+function extractGoogleCalendarIds(rawHtml: string): string[] {
+  const embedUrls = rawHtml.match(GOOGLE_CALENDAR_EMBED_PATTERN) || [];
+  const ids = new Set<string>();
+
+  for (const rawEmbedUrl of embedUrls) {
+    const normalizedEmbedUrl = rawEmbedUrl.replace(/\\u0026/g, "&").replace(/&amp;/g, "&");
+
+    try {
+      const embedUrl = new URL(normalizedEmbedUrl);
+      const rawCalendarId = cleanText(embedUrl.searchParams.get("src"));
+      if (!rawCalendarId) {
+        continue;
+      }
+
+      if (rawCalendarId.includes("@")) {
+        ids.add(rawCalendarId);
+        continue;
+      }
+
+      if (GOOGLE_CALENDAR_BASE64_PATTERN.test(rawCalendarId)) {
+        const decodedCalendarId = Buffer.from(rawCalendarId, "base64").toString("utf8");
+        if (decodedCalendarId.includes("@")) {
+          ids.add(decodedCalendarId);
+        }
+      }
+    } catch {
+      continue;
+    }
+  }
+
+  return Array.from(ids);
+}
+
+async function fetchGoogleCalendarIcs(calendarId: string): Promise<string> {
+  const url = `https://calendar.google.com/calendar/ical/${encodeURIComponent(calendarId)}/public/basic.ics`;
+  const response = await fetch(url, {
+    headers: {
+      "user-agent": "NorCalSWU Calendar Sync/1.0 (+https://norcalswu.local)",
+    },
+    next: { revalidate: 0 },
+  });
+
+  if (!response.ok) {
+    throw new Error(`received ${response.status} from ${url}`);
+  }
+
+  return response.text();
+}
+
+function parseGoogleCalendarEvents(
+  ics: string,
+  source: ResolvedPageSource,
+  pageUrl: string,
+  calendarId: string,
+): NormalizedCalendarEvent[] {
+  const lines = ics.replace(/\r\n/g, "\n").replace(/\n[ \t]/g, "").split("\n");
+  const events: NormalizedCalendarEvent[] = [];
+  let currentEvent: Record<string, IcsPropertyValue[]> | null = null;
+
+  for (const line of lines) {
+    if (line === "BEGIN:VEVENT") {
+      currentEvent = {};
+      continue;
+    }
+
+    if (line === "END:VEVENT") {
+      const normalizedEvent = normalizeGoogleCalendarEvent(currentEvent, source, pageUrl, calendarId);
+      if (normalizedEvent) {
+        events.push(normalizedEvent);
+      }
+      currentEvent = null;
+      continue;
+    }
+
+    if (!currentEvent) {
+      continue;
+    }
+
+    const separatorIndex = line.indexOf(":");
+    if (separatorIndex === -1) {
+      continue;
+    }
+
+    const property = line.slice(0, separatorIndex);
+    const value = line.slice(separatorIndex + 1);
+    const [name, ...params] = property.split(";");
+    const key = name.toUpperCase();
+
+    currentEvent[key] = currentEvent[key] || [];
+    currentEvent[key].push({
+      params,
+      value: unescapeIcsText(value),
+    });
+  }
+
+  return events;
+}
+
+function normalizeGoogleCalendarEvent(
+  event: Record<string, IcsPropertyValue[]> | null,
+  source: ResolvedPageSource,
+  pageUrl: string,
+  calendarId: string,
+): NormalizedCalendarEvent | null {
+  if (!event || event.RRULE?.length) {
+    return null;
+  }
+
+  const title = cleanText(event.SUMMARY?.[0]?.value);
+  const startDate = parseIcsDateValue(event.DTSTART?.[0]);
+  if (!title || !startDate) {
+    return null;
+  }
+
+  if (looksLikeConfiguredWeeklyPlay(source.storeId, title, event.DESCRIPTION?.[0]?.value, startDate)) {
+    return null;
+  }
+
+  const parsedEndDate = parseIcsDateValue(event.DTEND?.[0]);
+  const resolvedEndDate =
+    parsedEndDate && parsedEndDate.isAllDay
+      ? parsedEndDate
+      : parsedEndDate ||
+        (startDate.isAllDay
+          ? { value: startDate.value.plus({ days: 1 }), isAllDay: true }
+          : {
+              value: startDate.value.plus({ minutes: DEFAULT_EVENT_DURATION_MINUTES }),
+              isAllDay: false,
+            });
+
+  const description = buildDescription([
+    event.DESCRIPTION?.[0]?.value,
+    `Imported from ${source.label}.`,
+    event.URL?.[0]?.value && event.URL[0].value !== pageUrl
+      ? `Original listing: ${event.URL[0].value}`
+      : undefined,
+  ]);
+
+  return {
+    sourceUid: buildSourceUid(
+      "tracked-page",
+      `${source.id}:${calendarId}:${event.UID?.[0]?.value || title}:${startDate.value.toISO()}`,
+    ),
+    sourceType: "tracked-page",
+    sourceLabel: `${source.label} calendar`,
+    storeId: source.storeId,
+    title,
+    description,
+    location: cleanText(event.LOCATION?.[0]?.value) || source.location,
+    url: resolveTrackedUrl(pageUrl, event.URL?.[0]?.value || pageUrl),
+    start: buildCalendarDate(startDate),
+    end: buildCalendarDate(resolvedEndDate),
+  };
+}
+
+function parseIcsDateValue(property?: IcsPropertyValue): { value: DateTime; isAllDay: boolean } | null {
+  if (!property) {
+    return null;
+  }
+
+  const value = cleanText(property.value);
+  if (!value) {
+    return null;
+  }
+
+  const upperParams = property.params.map((param) => param.toUpperCase());
+  const isAllDay = upperParams.includes("VALUE=DATE");
+
+  if (isAllDay) {
+    const date = DateTime.fromFormat(value, "yyyyLLdd", { zone: DEFAULT_TIMEZONE });
+    return date.isValid ? { value: date, isAllDay: true } : null;
+  }
+
+  if (/^\d{8}T\d{6}Z$/.test(value)) {
+    const date = DateTime.fromFormat(value, "yyyyLLdd'T'HHmmss'Z'", { zone: "utc" }).setZone(
+      DEFAULT_TIMEZONE,
+    );
+    return date.isValid ? { value: date, isAllDay: false } : null;
+  }
+
+  const tzid = property.params.find((param) => param.startsWith("TZID="))?.slice(5) || DEFAULT_TIMEZONE;
+  const format = value.length === 15 ? "yyyyLLdd'T'HHmmss" : "yyyyLLdd'T'HHmm";
+  const date = DateTime.fromFormat(value, format, { zone: tzid });
+  return date.isValid ? { value: date, isAllDay: false } : null;
+}
+
+function looksLikeConfiguredWeeklyPlay(
+  storeId: string | undefined,
+  title: string,
+  description: string | undefined,
+  parsedDate: { value: DateTime; isAllDay: boolean },
+) {
+  if (!storeId || parsedDate.isAllDay) {
+    return false;
+  }
+
+  const weeklyPlay = stores[storeId]?.events.weeklyPlay;
+  if (!weeklyPlay) {
+    return false;
+  }
+
+  const haystack = `${title}\n${description || ""}`.toLowerCase();
+  if (!["star wars", "unlimited", "swu"].some((keyword) => haystack.includes(keyword))) {
+    return false;
+  }
+
+  return parseWeeklyPlaySlots(weeklyPlay).some((slot) => {
+    if (slot.weekday !== parsedDate.value.weekday) {
+      return false;
+    }
+
+    const { hour, minute } = parseTime(slot.timeLabel);
+    const candidateMinutes = hour * 60 + minute;
+    const eventMinutes = parsedDate.value.hour * 60 + parsedDate.value.minute;
+    return Math.abs(candidateMinutes - eventMinutes) <= 60;
+  });
+}
+
+function unescapeIcsText(value: string) {
+  return value
+    .replace(/\\n/gi, "\n")
+    .replace(/\\,/g, ",")
+    .replace(/\\;/g, ";")
+    .replace(/\\\\/g, "\\");
+}
+
+function looksLikeMerchandiseListing(
+  title: string,
+  description: string | undefined,
+  url: string,
+) {
+  const haystack = `${title}\n${description || ""}\n${url}`.toLowerCase();
+  return NON_EVENT_PRODUCT_PATTERN.test(haystack) && !TRACKED_EVENT_HINT_PATTERN.test(haystack);
+}
+
+function resolveTrackedUrl(baseUrl: string, rawUrl?: string) {
+  const candidate = cleanText(rawUrl);
+  if (!candidate) {
+    return baseUrl;
+  }
+
+  try {
+    return new URL(candidate, baseUrl).toString();
+  } catch {
+    return baseUrl;
+  }
 }
 
 function parseEventDate(rawValue?: string): { value: DateTime; isAllDay: boolean } | null {
