@@ -245,6 +245,7 @@ function normalizeTournamentEvent(
     sourceUid: `swuapi-${stableId}`,
     sourceType: "swuapi",
     sourceLabel: "swuapi tournament feed",
+    storeId: match.storeId,
     title,
     description: buildDescription([
       `Imported from swuapi.com tournament data sourced from melee.gg.`,

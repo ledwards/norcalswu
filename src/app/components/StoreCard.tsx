@@ -66,7 +66,7 @@ export default function StoreCard({ name, address, contact, events, social }: St
   const hasEvents = eventDetails.length > 0 || Boolean(events.registrationUrl);
 
   return (
-    <div className="rounded-lg bg-white p-6 shadow">
+    <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
       <h3 className="mb-4 text-xl font-bold text-gray-900">{name}</h3>
       <div className="relative mb-4 aspect-video overflow-hidden rounded-lg">
         <iframe

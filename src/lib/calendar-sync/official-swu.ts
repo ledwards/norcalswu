@@ -136,6 +136,7 @@ export async function collectOfficialFinderEvents(): Promise<NormalizedCalendarE
       sourceUid: `official-swu-${event.id}`,
       sourceType: "official-swu",
       sourceLabel: "Star Wars: Unlimited event finder",
+      storeId: event.storeId,
       title: event.title,
       description: buildDescription([
         "Imported from the official Star Wars: Unlimited event finder.",

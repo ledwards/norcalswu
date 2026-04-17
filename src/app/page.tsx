@@ -1,5 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
+import type { ReactNode } from "react";
+import { FaDiscord } from "react-icons/fa";
+import CalendarWidget from "./components/CalendarWidget";
 import ContentCard from "./components/ContentCard";
 import EventHighlightsCard, {
   type HighlightedEvent,
@@ -11,20 +14,21 @@ import {
   type UpcomingCompetitiveEvent,
   type UpcomingOfficialMajorEvent,
 } from "../lib/calendar-sync/official-swu";
+import { getPublicCalendarData } from "../lib/calendar-sync/public-calendar";
 import { storeRegions, stores, type StoreRegion } from "../lib/stores";
 
-const CALENDAR_EMBED_URL =
-  "https://calendar.google.com/calendar/embed?src=047048eefea36248a07bfb5565ea9a9d6741d8a8ca0cf11f49a7e90dedd88a8e%40group.calendar.google.com&mode=AGENDA";
-const DISCORD_URL = "https://discord.gg/B4BxV3sAbD";
-const COMMUNITY_URL = "https://discord.gg/YJRtwBCMSa";
+const DISCORD_URL = "https://discord.gg/cdQHka47r7";
+const COMMUNITY_URL = "https://discord.gg/cdQHka47r7";
 const CALENDAR_CONTACT_TEXT =
-  "Interested in being an admin for this calendar? Contact @terronk on the NorCal SWU Discord";
+  "Any events we are missing? Contact @terronk on the NorCal SWU Discord";
 const STORE_FEEDBACK_TEXT =
   "Missing or incorrect information? Contact @terronk on the NorCal SWU Discord";
 const WELCOME_TEXT =
   "Whether you're just starting out or a seasoned player, our community welcomes all skill levels. Join us for regular meetups, tournaments, and casual play sessions.";
 const COMMUNITY_TEXT =
   "Connect with Star Wars: Unlimited players in the Northern California area. Share strategies, trade cards, and make new friends in the community.";
+const DISCORD_BUTTON_CLASS_NAME =
+  "inline-flex items-center justify-center gap-3 rounded-lg bg-[#5865F2] px-8 py-3 text-lg font-semibold text-white shadow-sm transition-colors hover:bg-[#4752C4]";
 
 const LOCAL_EVENT_SECTION_CONFIGS: Array<{
   emptyText: string;
@@ -46,35 +50,16 @@ const LOCAL_EVENT_SECTION_CONFIGS: Array<{
   },
 ];
 
-const MAJOR_EVENT_SECTION_CONFIGS: Array<{
-  emptyText: string;
-  slug: UpcomingOfficialMajorEvent["typeSlug"];
-  title: string;
-}> = [
-  {
-    emptyText:
-      "No upcoming U.S. Sector Qualifiers are currently listed on the official competitive-play site.",
-    slug: "sector-qualifier",
-    title: "Upcoming Sector Qualifiers (U.S.)",
-  },
-  {
-    emptyText:
-      "No upcoming U.S. Regional Championships are currently listed on the official competitive-play site.",
-    slug: "regional-championship",
-    title: "Upcoming Regional Championships (U.S.)",
-  },
-  {
-    emptyText:
-      "No upcoming Galactic Championship is currently listed on the official competitive-play site.",
-    slug: "galactic-championship",
-    title: "Upcoming Galactic Championship",
-  },
-];
+const MAJOR_EVENT_SECTION = {
+  emptyText:
+    "No upcoming U.S. Sector Qualifiers, U.S. Regional Championships, or Galactic Championship events are currently listed on the official competitive-play site.",
+  title: "Upcoming Majors",
+};
 
 export const revalidate = 1800;
 
 export default async function Home() {
-  const { localEventSections, majorEventSections } = await getHomePageSections();
+  const { calendarData, localEventSections, majorEventsSection } = await getHomePageData();
 
   return (
     <div className="space-y-12">
@@ -102,29 +87,15 @@ export default async function Home() {
             in Northern California
           </span>
         </p>
-        <Link
-          href={DISCORD_URL}
-          className="inline-block rounded-lg bg-[#463E3F] px-8 py-3 text-lg font-semibold text-white shadow-sm transition-colors hover:bg-[#5865F2]"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Join our Discord
-        </Link>
+        <DiscordButton href={DISCORD_URL}>Join our Discord</DiscordButton>
       </section>
 
       <ContentCard title="Upcoming Events" titleClassName="mb-6 text-2xl font-bold text-gray-900">
-        <div className="mb-4 aspect-[3/2] w-full">
-          <iframe
-            src={CALENDAR_EMBED_URL}
-            title="NorCal Star Wars Unlimited community calendar"
-            style={{ border: 0 }}
-            width="100%"
-            height="100%"
-            frameBorder="0"
-            scrolling="no"
-            loading="lazy"
-          ></iframe>
-        </div>
+        <CalendarWidget
+          errors={calendarData.errors}
+          events={calendarData.events}
+          regions={calendarData.regions}
+        />
         <p className="text-center text-sm italic text-gray-600">{CALENDAR_CONTACT_TEXT}</p>
       </ContentCard>
 
@@ -134,10 +105,8 @@ export default async function Home() {
         ))}
       </section>
 
-      <section className="grid gap-8 md:grid-cols-3">
-        {majorEventSections.map((section) => (
-          <EventHighlightsCard key={section.title} {...section} />
-        ))}
+      <section>
+        <EventHighlightsCard {...majorEventsSection} />
       </section>
 
       <section className="grid gap-8 md:grid-cols-2">
@@ -146,19 +115,13 @@ export default async function Home() {
         </ContentCard>
         <ContentCard title="Find Local Players">
           <p className="mb-6 text-gray-700">{COMMUNITY_TEXT}</p>
-          <Link
-            href={COMMUNITY_URL}
-            className="inline-block rounded-lg bg-[#463E3F] px-8 py-3 text-lg font-semibold text-white shadow-sm transition-colors hover:bg-[#5865F2]"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Join the Community →
-          </Link>
+          <DiscordButton href={COMMUNITY_URL}>Join the Community</DiscordButton>
         </ContentCard>
       </section>
 
       <ContentCard
         title="Local Game Stores"
+        className="bg-[lightgoldenrodyellow]"
         titleClassName="mb-8 text-2xl font-bold text-gray-900"
       >
         {storeRegions.map((region) => (
@@ -171,19 +134,23 @@ export default async function Home() {
   );
 }
 
-async function getHomePageSections() {
-  const [competitiveEvents, majorEvents] = await Promise.all([
+async function getHomePageData() {
+  const [calendarData, competitiveEvents, majorEvents] = await Promise.all([
+    getPublicCalendarData().catch(() => ({
+      errors: ["Public calendar data could not be loaded."],
+      events: [],
+      regions: [],
+    })),
     getUpcomingCompetitiveEvents().catch(() => []),
     getUpcomingOfficialMajorEvents().catch(() => []),
   ]);
 
   return {
+    calendarData,
     localEventSections: LOCAL_EVENT_SECTION_CONFIGS.map((config) =>
       buildLocalEventSection(config, competitiveEvents),
     ),
-    majorEventSections: MAJOR_EVENT_SECTION_CONFIGS.map((config) =>
-      buildMajorEventSection(config, majorEvents),
-    ),
+    majorEventsSection: buildMajorEventsSection(majorEvents),
   };
 }
 
@@ -201,15 +168,32 @@ function buildLocalEventSection(
   };
 }
 
-function buildMajorEventSection(
-  config: (typeof MAJOR_EVENT_SECTION_CONFIGS)[number],
-  events: UpcomingOfficialMajorEvent[],
-) {
+function buildMajorEventsSection(events: UpcomingOfficialMajorEvent[]) {
   return {
-    emptyText: config.emptyText,
-    events: events.filter((event) => event.typeSlug === config.slug).map(mapMajorEvent),
-    title: config.title,
+    emptyText: MAJOR_EVENT_SECTION.emptyText,
+    events: events.map(mapMajorEvent),
+    title: MAJOR_EVENT_SECTION.title,
   };
+}
+
+function DiscordButton({
+  children,
+  href,
+}: {
+  children: ReactNode;
+  href: string;
+}) {
+  return (
+    <Link
+      href={href}
+      className={DISCORD_BUTTON_CLASS_NAME}
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      <FaDiscord className="text-xl" aria-hidden="true" />
+      <span>{children}</span>
+    </Link>
+  );
 }
 
 function StoreRegionGroup({ region }: { region: StoreRegion }) {

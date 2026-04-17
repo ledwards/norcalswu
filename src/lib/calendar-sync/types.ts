@@ -8,6 +8,7 @@ export interface NormalizedCalendarEvent {
   sourceUid: string;
   sourceType: "weekly-play" | "tracked-page" | "official-swu" | "swuapi";
   sourceLabel: string;
+  storeId?: string;
   title: string;
   description?: string;
   location?: string;

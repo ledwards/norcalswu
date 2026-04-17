@@ -49,15 +49,41 @@ interface ResolvedPageSource extends TrackedPageSource {
   location?: string;
 }
 
+interface CollectNormalizedEventsOptions {
+  weeklyPlayPastWindowDays?: number;
+  weeklyPlayWindowDays?: number;
+}
+
 export async function collectNormalizedEvents(): Promise<{
+  events: NormalizedCalendarEvent[];
+  errors: string[];
+}>;
+export async function collectNormalizedEvents(
+  options: CollectNormalizedEventsOptions,
+): Promise<{
+  events: NormalizedCalendarEvent[];
+  errors: string[];
+}>;
+export async function collectNormalizedEvents(
+  options: CollectNormalizedEventsOptions = {},
+): Promise<{
   events: NormalizedCalendarEvent[];
   errors: string[];
 }> {
   const events: NormalizedCalendarEvent[] = [];
   const errors: string[] = [];
+  const weeklyPlayPastWindowDays = options.weeklyPlayPastWindowDays ?? 0;
+  const weeklyPlayWindowDays = options.weeklyPlayWindowDays ?? DEFAULT_SYNC_WINDOW_DAYS;
 
   for (const [storeId, store] of Object.entries(stores)) {
-    events.push(...buildWeeklyPlayEvents(storeId, store));
+    events.push(
+      ...buildWeeklyPlayEvents(
+        storeId,
+        store,
+        weeklyPlayWindowDays,
+        weeklyPlayPastWindowDays,
+      ),
+    );
   }
 
   try {
@@ -93,7 +119,12 @@ export async function collectNormalizedEvents(): Promise<{
   };
 }
 
-function buildWeeklyPlayEvents(storeId: string, store: StoreRecord): NormalizedCalendarEvent[] {
+function buildWeeklyPlayEvents(
+  storeId: string,
+  store: StoreRecord,
+  weeklyPlayWindowDays: number,
+  weeklyPlayPastWindowDays: number,
+): NormalizedCalendarEvent[] {
   const weeklyPlay = store.events.weeklyPlay;
   if (!weeklyPlay) {
     return [];
@@ -105,13 +136,14 @@ function buildWeeklyPlayEvents(storeId: string, store: StoreRecord): NormalizedC
   }
 
   const now = DateTime.now().setZone(DEFAULT_TIMEZONE);
-  const horizon = now.plus({ days: DEFAULT_SYNC_WINDOW_DAYS });
+  const windowStart = now.minus({ days: weeklyPlayPastWindowDays }).startOf("day");
+  const horizon = now.plus({ days: weeklyPlayWindowDays });
   const location = formatStoreLocation(store);
   const sourceUrl = store.events.registrationUrl || store.social.website || store.social.store;
   const events: NormalizedCalendarEvent[] = [];
 
   for (const slot of slots) {
-    let occurrence = nextOccurrence(slot, now);
+    let occurrence = nextOccurrence(slot, windowStart);
     while (occurrence <= horizon) {
       const end = occurrence.plus({ minutes: DEFAULT_EVENT_DURATION_MINUTES });
       const titleSuffix = slot.note ? ` (${slot.note})` : "";
@@ -122,12 +154,9 @@ function buildWeeklyPlayEvents(storeId: string, store: StoreRecord): NormalizedC
         ),
         sourceType: "weekly-play",
         sourceLabel: `${store.name} weekly play`,
+        storeId,
         title: `${store.name} Star Wars: Unlimited Weekly Play${titleSuffix}`,
-        description: buildDescription([
-          slot.note ? `Format notes: ${slot.note}` : undefined,
-          `Generated from the weekly play schedule listed for ${store.name}.`,
-          sourceUrl ? `Registration or store page: ${sourceUrl}` : undefined,
-        ]),
+        description: buildDescription([slot.note ? `Format notes: ${slot.note}` : undefined]),
         location,
         url: sourceUrl,
         start: {
@@ -426,6 +455,7 @@ function normalizeStructuredEvent(
     sourceUid: buildSourceUid("tracked-page", `${source.id}:${title}:${startDate.value.toISO()}`),
     sourceType: "tracked-page",
     sourceLabel: source.label,
+    storeId: source.storeId,
     title,
     description: buildDescription([
       raw.description,
